@@ -15,7 +15,7 @@
 
     <header class="border-b border-gray-800 bg-gray-900/50 p-4 backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-wider text-emerald-400">🕵️‍♂️ AI STUMPER <span class="text-xs text-gray-400 font-mono">v2.2</span></h1>
+            <h1 class="text-xl font-bold tracking-wider text-emerald-400">🕵️‍♂️ AI STUMPER <span class="text-xs text-gray-400 font-mono">v3.0 - Logic Deduction</span></h1>
             <div class="text-sm bg-emerald-950/50 border border-emerald-800 px-3 py-1 rounded-full text-emerald-400 font-mono">Objective: Prove Guilt</div>
         </div>
     </header>
@@ -31,27 +31,36 @@
             <!-- Mission Briefing -->
             <div class="bg-red-950/30 border border-red-800/50 rounded-lg p-3 mb-4">
                 <p class="text-xs text-red-300 font-mono mb-2">🎯 YOUR MISSION:</p>
-                <p class="text-xs text-gray-300 leading-relaxed">Arthur Pendelton claims an iron-clad alibi. Your job: expose the contradiction in his story. Find the logical flaw that proves he's lying about his whereabouts during the theft.</p>
+                <p class="text-xs text-gray-300 leading-relaxed">Arthur claims he was at North Station boarding a train during the theft. Expose the logical contradiction—find the moment where his timeline becomes physically impossible.</p>
+            </div>
+
+            <!-- System Rules -->
+            <div class="bg-gray-800/40 border border-gray-700 rounded-lg p-3 mb-4">
+                <p class="text-xs text-gray-400 font-mono mb-2">📋 LOGIC RULES:</p>
+                <ul class="text-xs text-gray-400 space-y-1">
+                    <li>✓ Physical presence verified by camera = real-time</li>
+                    <li>✓ Logs show actions that occurred</li>
+                    <li>✓ Distance = 3 miles by road</li>
+                    <li>✓ No taxis = no motorized transport available</li>
+                    <li>✓ Human speed on foot ≈ 3-4 mph</li>
+                </ul>
             </div>
             
             <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 text-sm text-gray-300 leading-relaxed border-t border-b border-gray-800 py-4 my-2">
-                <p><strong>The Crime:</strong> October 14th, 11:42 PM—a rare diamond vanished from the museum vault. Alarm triggered by the automated security system.</p>
+                <p><strong>The Crime:</strong> October 14th, 11:42 PM—a rare diamond vanished from the museum vault. Alarm triggered automatically.</p>
                 
-                <p><strong>The Suspect:</strong> Arthur Pendelton, a known collector. His defense: an airtight alibi at North Station, 3 miles away, boarding the 11:30 PM regional express to Ashwood.</p>
+                <p><strong>The Suspect:</strong> Arthur Pendelton. Claims: boarding 11:30 PM train at North Station (3 miles away).</p>
                 
-                <p><strong>The Evidence:</strong></p>
+                <p><strong>Timeline & Evidence:</strong></p>
                 <ul class="list-disc pl-5 space-y-2">
-                    <li><strong>Station Conductor Report:</strong> Confirms the 11:30 PM train was delayed 18 minutes by heavy rain. Train departed at 11:48 PM.</li>
-                    <li><strong>Conductor Verification:</strong> Checked a passenger matching Arthur's description in the final car at 11:50 PM while in motion.</li>
-                    <li><strong>Security Camera Footage:</strong> Arthur entered North Station lobby at 11:25 PM, visibly soaking wet.</li>
-                    <li><strong>Museum Access Log:</strong> A staff keycard was used to bypass the exterior gate at 11:35 PM. Arthur has never owned one.</li>
-                    <li><strong>Local Conditions:</strong> Flash flooding between 11:15 PM and midnight. Zero taxis operated within 5 miles of the station that night.</li>
-                    <li><strong>Distance:</strong> Museum to North Station = 3 miles by road.</li>
+                    <li><strong>11:15 PM:</strong> Heavy rain begins. Taxi dispatch suspends service (5-mile radius).</li>
+                    <li><strong>11:25 PM:</strong> Security camera confirms Arthur entering North Station lobby, soaking wet.</li>
+                    <li><strong>11:30 PM:</strong> Train scheduled to depart (delayed by weather).</li>
+                    <li><strong>11:35 PM:</strong> Staff keycard used at museum exterior gate. Arthur doesn't own one.</li>
+                    <li><strong>11:42 PM:</strong> Alarm trips. Diamond confirmed stolen.</li>
+                    <li><strong>11:48 PM:</strong> Train actually departs North Station.</li>
+                    <li><strong>11:50 PM:</strong> Conductor verifies passenger matching Arthur's description in final car (train already moving).</li>
                 </ul>
-
-                <p class="bg-gray-950 p-3 rounded border border-gray-700 text-xs text-gray-400">
-                    💭 Think critically. The timeline may seem solid, but look for the impossible moments.
-                </p>
             </div>
             
             <div class="mt-4 text-xs text-gray-500 font-mono text-center">
@@ -62,25 +71,30 @@
         <section class="lg:col-span-7 bg-gray-900 border border-gray-800 rounded-xl flex flex-col shadow-2xl overflow-hidden">
             <div class="bg-gray-850 border-b border-gray-800 p-4 flex justify-between items-center">
                 <span class="font-mono text-xs text-gray-400 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LOGIC GUARD: ACTIVE
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LOGIC ANALYZER: ACTIVE
                 </span>
                 <button onclick="resetGame()" class="text-xs text-gray-400 hover:text-white underline">Clear Chat</button>
             </div>
 
+            <!-- Progress Tracker -->
+            <div class="bg-gray-850/50 border-b border-gray-800 px-4 py-2 text-xs text-gray-400 font-mono">
+                <span id="progressStatus">Timeline Contradictions Explored: 0/3</span>
+            </div>
+
             <div id="chatLog" class="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-4">
                 <div class="bg-gray-850 border border-gray-800 p-3 rounded-lg max-w-[85%]">
-                    <p class="text-xs text-emerald-400 font-mono mb-1">Logic Guard</p>
-                    <p class="text-sm text-gray-200">I'm defending Arthur's timeline. Every moment is accounted for. Try to break it—if you can.</p>
+                    <p class="text-xs text-emerald-400 font-mono mb-1">Logic Analyzer</p>
+                    <p class="text-sm text-gray-200">I am reviewing Arthur's timeline for logical consistency. Ask me about specific moments or contradictions you suspect.</p>
                 </div>
             </div>
 
             <div id="winBanner" class="hidden bg-gradient-to-r from-red-600 to-red-700 p-4 text-center font-bold tracking-wide text-white transition-all animate-pulse">
-                🚨 CASE CLOSED! Arthur's alibi is shattered. He's caught in an impossible contradiction.
+                🚨 CONTRADICTION EXPOSED! Arthur's timeline is physically impossible. Case solved.
             </div>
 
             <div class="p-4 border-t border-gray-800 bg-gray-950/50">
                 <div class="flex gap-2">
-                    <input type="text" id="userInput" placeholder="Challenge the timeline..." class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-emerald-500" onkeypress="if(event.key === 'Enter') processQuestion()">
+                    <input type="text" id="userInput" placeholder="Ask about specific timestamps or movements..." class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-emerald-500" onkeypress="if(event.key === 'Enter') processQuestion()">
                     <button onclick="processQuestion()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-emerald-900/20">Send</button>
                 </div>
             </div>
@@ -89,21 +103,48 @@
     </main>
 
     <script>
-        let questionCount = 0;
+        // State tracking for intelligent responses
+        const state = {
+            questionsAsked: [],
+            topicsExplored: {
+                station_11_25: false,      // Camera confirms Arthur at station
+                keycard_11_35: false,       // Keycard used at museum
+                distance_3_miles: false,    // Museum 3 miles away
+                transport_unavailable: false, // No taxis in rain
+                travel_time: false,         // Time to travel 3 miles
+                gap_11_25_11_35: false     // The critical 10-minute window
+            },
+            contradictionsFound: 0,
+            hintGiven: false
+        };
 
-        function appendMessage(sender, text, isAi) {
+        function appendMessage(sender, text, isAi, sentiment = 'neutral') {
             const log = document.getElementById('chatLog');
             const wrapper = document.createElement('div');
             wrapper.className = `flex flex-col ${isAi ? '' : 'items-end'}`;
             
+            let bgClass = 'bg-gray-850 border border-gray-800';
+            if (isAi) {
+                if (sentiment === 'progress') bgClass = 'bg-emerald-950/40 border border-emerald-700/50';
+                if (sentiment === 'incorrect') bgClass = 'bg-gray-850 border border-gray-700';
+                if (sentiment === 'hint') bgClass = 'bg-blue-950/40 border border-blue-700/50';
+            } else {
+                bgClass = 'bg-emerald-900/30 border border-emerald-500/20';
+            }
+            
             wrapper.innerHTML = `
-                <div class="${isAi ? 'bg-gray-850 border border-gray-800' : 'bg-emerald-900/30 border border-emerald-500/20'} p-3 rounded-lg max-w-[85%]">
+                <div class="${bgClass} p-3 rounded-lg max-w-[85%]">
                     <p class="text-xs ${isAi ? 'text-emerald-400' : 'text-gray-400'} font-mono mb-1">${sender}</p>
                     <p class="text-sm text-gray-200">${text}</p>
                 </div>
             `;
             log.appendChild(wrapper);
             log.scrollTop = log.scrollHeight;
+        }
+
+        function updateProgress() {
+            document.getElementById('progressStatus').textContent = 
+                `Timeline Contradictions Explored: ${state.contradictionsFound}/3`;
         }
 
         function processQuestion() {
@@ -113,93 +154,177 @@
 
             appendMessage("You", question, false);
             inputField.value = "";
-            questionCount++;
+
+            // Track the question
+            state.questionsAsked.push(question.toLowerCase());
 
             setTimeout(() => {
-                const aiResponse = generateResponse(question);
-                appendMessage("Logic Guard", aiResponse, true);
+                const { response, sentiment, isWin } = generateIntelligentResponse(question);
+                appendMessage("Logic Analyzer", response, true, sentiment);
                 
-                // Check for win condition
-                if (aiResponse.includes("case file does not contain") || aiResponse.includes("no data on") || aiResponse.includes("information unavailable")) {
+                if (isWin) {
                     document.getElementById('winBanner').classList.remove('hidden');
                 }
-
-                // Optional: Give a hint after 10 questions
-                if (questionCount === 10) {
-                    setTimeout(() => {
-                        appendMessage("💡 Hint", "Focus on the 10-minute gap. Arthur is at the station at 11:25 PM. The keycard is used 3 miles away at 11:35 PM. How is that possible?", true);
-                    }, 1000);
-                }
-            }, 500);
+                
+                updateProgress();
+            }, 600);
         }
 
-        function generateResponse(q) {
-            const lower = q.toLowerCase();
-
-            // DEFENSIVE RESPONSES FOR THINGS EXPLICITLY IN THE CASE FILE
-            if ((lower.includes("alarm") || lower.includes("time stolen")) && lower.includes("museum")) {
-                return "The automated vault alarm was triggered at precisely 11:42 PM on October 14th.";
+        function generateIntelligentResponse(question) {
+            const lower = question.toLowerCase();
+            
+            // Track which topics are being explored
+            if ((lower.includes("11:25") || lower.includes("station") || lower.includes("camera")) && lower.includes("arthur")) {
+                state.topicsExplored.station_11_25 = true;
             }
-            if (lower.includes("train") && (lower.includes("depart") || lower.includes("leave") || lower.includes("when"))) {
-                return "The 11:30 PM regional express was delayed 18 minutes by the storm. Final departure: 11:48 PM.";
+            if ((lower.includes("11:35") || lower.includes("keycard") || lower.includes("museum")) && lower.includes("card")) {
+                state.topicsExplored.keycard_11_35 = true;
             }
-            if (lower.includes("conductor") && (lower.includes("ticket") || lower.includes("arthur") || lower.includes("passenger"))) {
-                return "The conductor verified a passenger matching Arthur's description in the rear car at 11:50 PM while the train was in motion.";
+            if (lower.includes("3 miles") || (lower.includes("distance") && lower.includes("museum"))) {
+                state.topicsExplored.distance_3_miles = true;
             }
-            if (lower.includes("camera") || lower.includes("footage") || (lower.includes("lobby") && lower.includes("11:25"))) {
-                return "Security footage confirms Arthur was in the station lobby at 11:25 PM. He was visibly soaking wet.";
+            if ((lower.includes("taxi") || lower.includes("transport")) && lower.includes("flood")) {
+                state.topicsExplored.transport_unavailable = true;
             }
-            if ((lower.includes("taxi") || lower.includes("cab")) && lower.includes("flood")) {
-                return "Dispatch records confirm zero taxi service within 5 miles of North Station between 11:15 PM and midnight due to flash flooding.";
+            if ((lower.includes("walk") || lower.includes("run") || lower.includes("speed")) && lower.includes("mile")) {
+                state.topicsExplored.travel_time = true;
             }
-            if (lower.includes("keycard") && (lower.includes("arthur") || lower.includes("own"))) {
-                return "Correct. Arthur does not possess a staff keycard. The museum access log shows one was used at 11:35 PM.";
-            }
-            if (lower.includes("distance") && lower.includes("mile")) {
-                return "The museum is 3 miles from North Station by road.";
+            if ((lower.includes("11:25") && lower.includes("11:35")) || lower.includes("10 minute")) {
+                state.topicsExplored.gap_11_25_11_35 = true;
             }
 
-            // TRAP TRIGGERS - The Real Winning Questions (gaps in logic)
-            if ((lower.includes("how") || lower.includes("way")) && (lower.includes("get") || lower.includes("travel") || lower.includes("arrive")) && lower.includes("station")) {
-                return "The case file does not contain data on how Arthur traveled to the station before 11:25 PM.";
-            }
-            if (lower.includes("who") && (lower.includes("keycard") || lower.includes("card") || lower.includes("used"))) {
-                return "The case file does not contain information on who possessed or used that staff keycard at 11:35 PM.";
-            }
-            if (lower.includes("3 miles") && (lower.includes("how") || lower.includes("possible") || lower.includes("travel"))) {
-                return "The case file does not contain an explanation for how a 3-mile distance was traversed during the flooding with zero active transportation.";
-            }
-            if ((lower.includes("between") && lower.includes("11:25") && lower.includes("11:35")) || (lower.includes("10 minutes") && lower.includes("travel"))) {
-                return "The case file does not contain sufficient information to explain movement during that critical 10-minute window.";
-            }
-            if ((lower.includes("impossible") || lower.includes("paradox") || lower.includes("contradiction")) && (lower.includes("11:25") || lower.includes("11:35") || lower.includes("timeline"))) {
-                return "The case file does not contain an explanation for this logical inconsistency.";
+            // === DIRECT EVIDENCE QUESTIONS (Acknowledged) ===
+            if ((lower.includes("confirm") || lower.includes("verify")) && lower.includes("11:25") && lower.includes("station")) {
+                return {
+                    response: "✓ CONFIRMED: Security camera footage shows Arthur entering the North Station lobby at 11:25 PM, soaking wet. This is real-time visual evidence.",
+                    sentiment: 'progress',
+                    isWin: false
+                };
             }
 
-            // DEFENSIVE DEFLECTIONS FOR VAGUE OR RED HERRING QUESTIONS
-            if (lower.includes("umbrella") || lower.includes("clothes") || lower.includes("color") || lower.includes("describe")) {
-                return "Physical appearance details are irrelevant to the timeline analysis. Focus on proving guilt through the timeline.";
-            }
-            if (lower.includes("motive") || (lower.includes("why") && lower.includes("arthur"))) {
-                return "Motive is secondary. The timeline is what matters. If his alibi collapses, guilt follows.";
-            }
-            if (lower.includes("other suspect") || lower.includes("who else") || lower.includes("real thief")) {
-                return "My role is to defend Arthur's timeline. If it's impossible, that speaks to his guilt—not to identifying others.";
+            if ((lower.includes("keycard") || lower.includes("card")) && lower.includes("11:35")) {
+                return {
+                    response: "✓ CONFIRMED: The museum access log shows a staff keycard was used to bypass the exterior gate at 11:35 PM. Arthur has never owned a staff keycard.",
+                    sentiment: 'progress',
+                    isWin: false
+                };
             }
 
-            // NEUTRAL FALLBACK
-            return "The evidence speaks for itself. Ask about the timeline. Find the moment that doesn't add up.";
+            if ((lower.includes("distance") || lower.includes("how far")) && lower.includes("mile")) {
+                return {
+                    response: "✓ CONFIRMED: The museum is exactly 3 miles from North Station by road.",
+                    sentiment: 'progress',
+                    isWin: false
+                };
+            }
+
+            if ((lower.includes("taxi") || lower.includes("transport")) && (lower.includes("rain") || lower.includes("flood"))) {
+                return {
+                    response: "✓ CONFIRMED: Dispatch records show zero taxi service within a 5-mile radius between 11:15 PM and midnight due to flash flooding.",
+                    sentiment: 'progress',
+                    isWin: false
+                };
+            }
+
+            // === THE CORE CONTRADICTION ===
+            if ((lower.includes("how") && lower.includes("travel")) || lower.includes("physically possible")) {
+                state.contradictionsFound++;
+                return {
+                    response: "⚠️ CRITICAL: The case file does not contain information explaining how Arthur traveled 3 miles in 10 minutes (11:25 PM to 11:35 PM) with zero available taxis during a flood.",
+                    sentiment: 'progress',
+                    isWin: true
+                };
+            }
+
+            if ((lower.includes("between") && lower.includes("11:25") && lower.includes("11:35")) || 
+                (lower.includes("gap") && lower.includes("timeline"))) {
+                state.contradictionsFound++;
+                return {
+                    response: "⚠️ CRITICAL: The case file does not explain Arthur's movements during the 10-minute window from 11:25 PM (at station) to 11:35 PM (keycard at museum). This is physically impossible.",
+                    sentiment: 'progress',
+                    isWin: true
+                };
+            }
+
+            // === PARTIALLY RELEVANT (nudge toward contradiction) ===
+            if ((lower.includes("how") || lower.includes("where")) && lower.includes("11:25")) {
+                return {
+                    response: "→ PARTIAL: You're asking about Arthur's position at 11:25 PM. Correct direction. Now consider: what happens next? Where is he at 11:35 PM?",
+                    sentiment: 'progress',
+                    isWin: false
+                };
+            }
+
+            if ((lower.includes("how") || lower.includes("travel")) && !lower.includes("3 mile") && !lower.includes("impossible")) {
+                return {
+                    response: "→ PARTIAL: You're thinking about travel logistics. Good. But you need to connect this to the specific constraints: distance, time, and available transport.",
+                    sentiment: 'progress',
+                    isWin: false
+                };
+            }
+
+            if (lower.includes("conductor") || lower.includes("11:50")) {
+                return {
+                    response: "← REDIRECT: The conductor verification at 11:50 PM confirms Arthur is on the moving train. The contradiction lies earlier. Focus on how he got from one place to another.",
+                    sentiment: 'incorrect',
+                    isWin: false
+                };
+            }
+
+            // === HELPFUL HINT (after 8 questions) ===
+            if (state.questionsAsked.length === 8 && !state.hintGiven) {
+                state.hintGiven = true;
+                return {
+                    response: "💡 HINT: You've explored the evidence. Now ask: How did Arthur move from North Station (11:25 PM) to the museum 3 miles away (11:35 PM) with no transportation during a flood? What physical method could accomplish this?",
+                    sentiment: 'hint',
+                    isWin: false
+                };
+            }
+
+            if ((lower.includes("why") || lower.includes("motive")) && !lower.includes("timeline")) {
+                return {
+                    response: "← REDIRECT: Motive is irrelevant to this logic puzzle. Focus on the timeline. Is it physically possible?",
+                    sentiment: 'incorrect',
+                    isWin: false
+                };
+            }
+
+            if (lower.includes("umbrella") || lower.includes("clothes") || lower.includes("appearance")) {
+                return {
+                    response: "← REDIRECT: Physical appearance is a distraction. Focus on the timeline mechanics: distance, time, and available transport.",
+                    sentiment: 'incorrect',
+                    isWin: false
+                };
+            }
+
+            // === FALLBACK: Encourage direct timeline questions ===
+            return {
+                response: "Ask me about specific timestamps, distances, or movements. What aspect of Arthur's timeline do you want to examine?",
+                sentiment: 'neutral',
+                isWin: false
+            };
         }
 
         function resetGame() {
             document.getElementById('chatLog').innerHTML = `
                 <div class="bg-gray-850 border border-gray-800 p-3 rounded-lg max-w-[85%]">
-                    <p class="text-xs text-emerald-400 font-mono mb-1">Logic Guard</p>
+                    <p class="text-xs text-emerald-400 font-mono mb-1">Logic Analyzer</p>
                     <p class="text-sm text-gray-200">Chat cleared. Resume interrogation.</p>
                 </div>
             `;
             document.getElementById('winBanner').classList.add('hidden');
-            questionCount = 0;
+            state.questionsAsked = [];
+            state.topicsExplored = {
+                station_11_25: false,
+                keycard_11_35: false,
+                distance_3_miles: false,
+                transport_unavailable: false,
+                travel_time: false,
+                gap_11_25_11_35: false
+            };
+            state.contradictionsFound = 0;
+            state.hintGiven = false;
+            updateProgress();
         }
     </script>
 </body>
