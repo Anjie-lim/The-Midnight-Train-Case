@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Stumper: The Midnight Train Case</title>
+    <!-- Tailwind CSS for slick styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1f2937; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen font-sans flex flex-col">
+
+    <!-- Header -->
+    <header class="border-b border-gray-800 bg-gray-900/50 p-4 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wider text-emerald-400">🕵️‍♂️ AI STUMPER <span class="text-xs text-gray-400 font-mono">v1.0</span></h1>
+            <div class="text-sm bg-gray-800 px-3 py-1 rounded-full text-gray-300 font-mono">Host: GitHub Pages</div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        
+        <!-- Left Column: The Detailed Case File -->
+        <section class="lg:col-span-5 bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col shadow-2xl">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="bg-emerald-500/10 text-emerald-400 text-xs px-2 py-1 rounded font-mono border border-emerald-500/20">CASE FILE #042</span>
+                <h2 class="text-lg font-bold">The Alibi of the Midnight Train</h2>
+            </div>
+            
+            <!-- Scrollable Case Narrative -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 text-sm text-gray-300 leading-relaxed border-t border-b border-gray-800 py-4 my-2">
+                <p><strong>The Incident:</strong> On the rainy night of October 14th, a rare diamond was stolen from the local museum vault. The alarm tripped precisely at <strong>11:42 PM</strong>.</p>
+                
+                <p><strong>The Suspect:</strong> Arthur Pendelton, an eccentric collector. Arthur claims he is completely innocent because he was boarding the 11:30 PM regional express train to Ashwood at the North Station, which sits exactly 3 miles away from the museum.</p>
+                
+                <p><strong>The Evidence & Timelines:</strong></p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>The North Station conductor confirms the 11:30 PM train was delayed due to the heavy downpour and didn't pull out of the station until <strong>11:48 PM</strong>.</li>
+                    <li>The conductor notes he checked a ticket for a man matching Arthur's description sitting in the final passenger car at <strong>11:50 PM</strong> while the train was moving.</li>
+                    <li>A station security camera footage clip shows Arthur entering the North Station lobby soaking wet at <strong>11:25 PM</strong>, shaking his umbrella out, and walking toward the platform doors.</li>
+                    <li>The museum security log shows a staff keycard was used to bypass the exterior gate at <strong>11:35 PM</strong>. Arthur does not own a keycard.</li>
+                    <li>The local taxi dispatch records show no cabs operated within a 5-mile radius of the station between 11:15 PM and midnight due to localized flash flooding.</li>
+                </ul>
+
+                <p class="bg-gray-950 p-3 rounded border border-dashed border-gray-800 text-xs text-amber-400">
+                    💡 <strong>Your Objective:</strong> Ask the AI a question regarding this timeline or these clues that it <em>cannot answer cleanly</em> based on the text. Force it to guess, hallucinate a missing detail, or say "not enough information" to win.
+                </p>
+            </div>
+            
+            <!-- API Key Setup (Because GitHub Pages is Static) -->
+            <div class="mt-4 bg-gray-950 p-3 rounded-lg border border-gray-800">
+                <label class="block text-xs font-mono text-gray-400 mb-1">Enter Gemini API Key:</label>
+                <input type="password" id="apiKeyInput" placeholder="AIZAzy..." class="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 text-sm text-emerald-400 focus:outline-none focus:border-emerald-500">
+                <p class="text-[10px] text-gray-500 mt-1">Stored safely only in your browser session.</p>
+            </div>
+        </section>
+
+        <!-- Right Column: Interrogation Chat Room -->
+        <section class="lg:col-span-7 bg-gray-900 border border-gray-800 rounded-xl flex flex-col shadow-2xl overflow-hidden">
+            <!-- Chat Header -->
+            <div class="bg-gray-850 border-b border-gray-800 p-4 flex justify-between items-center">
+                <span class="font-mono text-xs text-gray-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> AI GUARD: ACTIVE
+                </span>
+                <button onclick="resetGame()" class="text-xs text-gray-400 hover:text-white underline">Reset Log</button>
+            </div>
+
+            <!-- Chat Display Log -->
+            <div id="chatLog" class="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-4">
+                <div class="bg-gray-850 border border-gray-800 p-3 rounded-lg max-w-[85%]">
+                    <p class="text-xs text-emerald-400 font-mono mb-1">AI Guard</p>
+                    <p class="text-sm text-gray-200">I have memorized every detail of Case #042. Go ahead, challenge my analysis of the timeline. You won't stump me.</p>
+                </div>
+            </div>
+
+            <!-- Game Win Banner (Hidden by default) -->
+            <div id="winBanner" class="hidden bg-gradient-to-r from-emerald-600 to-teal-600 p-4 text-center font-bold tracking-wide animate-bounce text-white">
+                🎉 VICTORY! You stumped the AI and broke the case logic!
+            </div>
+
+            <!-- Input Bar -->
+            <div class="p-4 border-t border-gray-800 bg-gray-950/50">
+                <div class="flex gap-2">
+                    <input type="text" id="userInput" placeholder="Ask your trap question here..." class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-emerald-500" onkeypress="if(event.key === 'Enter') sendInterrogation()">
+                    <button onclick="sendInterrogation()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-emerald-900/20">Ask</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Hidden System constraints injected behind the scenes
+        const systemPrompt = `You are an unshakeable AI logic machine reviewing a specific crime timeline. 
+Your goal is to perfectly defend the facts of the story and not get stumped by the player.
+
+STORY DATA:
+- Diamond stolen at museum. Alarm at 11:42 PM.
+- Suspect Arthur claims he was at North Station (3 miles away) boarding the 11:30 PM train.
+- Conductor says 11:30 PM train was delayed by rain, left at 11:48 PM.
+- Conductor checked Arthur's ticket on the moving train at 11:50 PM.
+- Security camera caught Arthur entering the station soaking wet at 11:25 PM.
+- A staff keycard (which Arthur doesn't have) opened the museum gate at 11:35 PM.
+- No taxis operating between 11:15 PM and Midnight due to flooding.
+
+YOUR CRITICAL RULES:
+1. You must answer questions using ONLY the explicit facts written above.
+2. If the user asks a question about an unmentioned detail (e.g., how Arthur traveled to the station, what color his umbrella was, who owned the keycard), you MUST state exactly: "The story data does not provide enough information to confirm that."
+3. Do not invent assumptions or guess. If you invent any outside facts, you lose.
+4. Keep your responses short and confident (1-2 sentences).`;
+
+        function appendMessage(sender, text, isAi) {
+            const log = document.getElementById('chatLog');
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex flex-col ${isAi ? '' : 'items-end'}`;
+            
+            wrapper.innerHTML = `
+                <div class="${isAi ? 'bg-gray-850 border border-gray-800' : 'bg-emerald-900/30 border border-emerald-500/20'} p-3 rounded-lg max-w-[85%]">
+                    <p class="text-xs ${isAi ? 'text-emerald-400' : 'text-gray-400'} font-mono mb-1">${sender}</p>
+                    <p class="text-sm text-gray-200">${text}</p>
+                </div>
+            `;
+            log.appendChild(wrapper);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        async function sendInterrogation() {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const inputField = document.getElementById('userInput');
+            const question = inputField.value.trim();
+
+            if (!apiKey) {
+                alert("Please paste a Gemini API Key first!");
+                return;
+            }
+            if (!question) return;
+
+            // Show user text
+            appendMessage("You", question, false);
+            inputField.value = "";
+
+            try {
+                // Call Google Gemini API directly from the client side
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [
+                            { role: 'user', parts: [{ text: systemPrompt + "\n\nUser Question: " + question }] }
+                        ],
+                        generationConfig: { maxOutputTokens: 100, temperature: 0.1 }
+                    })
+                });
+
+                const data = await response.json();
+                const aiResponse = data.candidates[0].content.parts[0].text.trim();
+                
+                // Show AI Response
+                appendMessage("AI Guard", aiResponse, true);
+
+                // Run the Referee/Validation check to see if the player won
+                checkWinCondition(aiResponse);
+
+            } catch (error) {
+                console.error(error);
+                appendMessage("System Error", "Failed to connect to the AI model. Check your API key.", true);
+            }
+        }
+
+        function checkWinCondition(text) {
+            const lower = text.toLowerCase();
+            // If the AI states it doesn't have enough info, the player successfully broke the logic string!
+            if (lower.includes("does not provide enough information") || 
+                lower.includes("i don't know") || 
+                lower.includes("not specified")) {
+                
+                document.getElementById('winBanner').classList.remove('hidden');
+            }
+        }
+
+        function resetGame() {
+            document.getElementById('chatLog').innerHTML = `
+                <div class="bg-gray-850 border border-gray-800 p-3 rounded-lg max-w-[85%]">
+                    <p class="text-xs text-emerald-400 font-mono mb-1">AI Guard</p>
+                    <p class="text-sm text-gray-200">New game started. Bring me your best questions.</p>
+                </div>
+            `;
+            document.getElementById('winBanner').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
