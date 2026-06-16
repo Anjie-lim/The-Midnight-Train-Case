@@ -15,7 +15,7 @@
 
     <header class="border-b border-gray-800 bg-gray-900/50 p-4 backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-wider text-emerald-400">🕵️‍♂️ AI STUMPER <span class="text-xs text-gray-400 font-mono">v2.0 (Serverless)</span></h1>
+            <h1 class="text-xl font-bold tracking-wider text-emerald-400">🕵️‍♂️ AI STUMPER <span class="text-xs text-gray-400 font-mono">v2.1 (Hard Mode)</span></h1>
             <div class="text-sm bg-emerald-950/50 border border-emerald-800 px-3 py-1 rounded-full text-emerald-400 font-mono">Status: Ready to Play</div>
         </div>
     </header>
@@ -25,25 +25,26 @@
         <section class="lg:col-span-5 bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col shadow-2xl">
             <div class="flex items-center gap-2 mb-4">
                 <span class="bg-emerald-500/10 text-emerald-400 text-xs px-2 py-1 rounded font-mono border border-emerald-500/20">CASE FILE #042</span>
-                <h2 class="text-lg font-bold">The Alibi of the Midnight Train</h2>
+                <h2 class="text-lg font-bold">The Midnight Train Alibi</h2>
             </div>
             
             <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 text-sm text-gray-300 leading-relaxed border-t border-b border-gray-800 py-4 my-2">
-                <p><strong>The Incident:</strong> On the rainy night of October 14th, a rare diamond was stolen from the local museum vault. The alarm tripped precisely at <strong>11:42 PM</strong>.</p>
+                <p><strong>The Crime:</strong> October 14th, 11:42 PM—a rare diamond vanished from the museum vault. Alarm triggered by the automated security system.</p>
                 
-                <p><strong>The Suspect:</strong> Arthur Pendelton, an eccentric collector. Arthur claims he is completely innocent because he was boarding the 11:30 PM regional express train to Ashwood at the North Station, which sits exactly 3 miles away from the museum.</p>
+                <p><strong>The Suspect:</strong> Arthur Pendelton, a known collector. His defense: an airtight alibi at North Station, 3 miles away, boarding the 11:30 PM regional express to Ashwood.</p>
                 
-                <p><strong>The Evidence & Timelines:</strong></p>
+                <p><strong>The Evidence:</strong></p>
                 <ul class="list-disc pl-5 space-y-2">
-                    <li>The North Station conductor confirms the 11:30 PM train was delayed due to the heavy downpour and didn't pull out of the station until <strong>11:48 PM</strong>.</li>
-                    <li>The conductor notes he checked a ticket for a man matching Arthur's description sitting in the final passenger car at <strong>11:50 PM</strong> while the train was moving.</li>
-                    <li>A station security camera footage clip shows Arthur entering the North Station lobby soaking wet at <strong>11:25 PM</strong>, shaking his umbrella out, and walking toward the platform doors.</li>
-                    <li>The museum security log shows a staff keycard was used to bypass the exterior gate at <strong>11:35 PM</strong>. Arthur does not own a keycard.</li>
-                    <li>The local taxi dispatch records show no cabs operated within a 5-mile radius of the station between 11:15 PM and midnight due to localized flash flooding.</li>
+                    <li><strong>Station Conductor Report:</strong> Confirms the 11:30 PM train was delayed 18 minutes by heavy rain. Train departed at 11:48 PM.</li>
+                    <li><strong>Conductor Verification:</strong> Checked a passenger matching Arthur's description in the final car at 11:50 PM while in motion.</li>
+                    <li><strong>Security Camera Footage:</strong> Arthur entered North Station lobby at 11:25 PM, visibly soaking wet.</li>
+                    <li><strong>Museum Access Log:</strong> A staff keycard was used to bypass the exterior gate at 11:35 PM. Arthur has never owned one.</li>
+                    <li><strong>Local Conditions:</strong> Flash flooding between 11:15 PM and midnight. Zero taxis operated within 5 miles of the station that night.</li>
+                    <li><strong>Distance:</strong> Museum to North Station = 3 miles by road.</li>
                 </ul>
 
-                <p class="bg-gray-950 p-3 rounded border border-dashed border-gray-800 text-xs text-amber-400">
-                    💡 <strong>Your Objective:</strong> Force the AI into a logic corner. Ask about information *not mentioned* in the file (like who swiped the keycard, Arthur's clothing color, or how he traveled) to make it admit defeat!
+                <p class="bg-gray-950 p-3 rounded border border-gray-700 text-xs text-gray-400">
+                    💭 Review the timeline carefully. Challenge the logic where it seems airtight.
                 </p>
             </div>
             
@@ -55,26 +56,26 @@
         <section class="lg:col-span-7 bg-gray-900 border border-gray-800 rounded-xl flex flex-col shadow-2xl overflow-hidden">
             <div class="bg-gray-850 border-b border-gray-800 p-4 flex justify-between items-center">
                 <span class="font-mono text-xs text-gray-400 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> MATRIX LOGIC GUARD: ACTIVE
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LOGIC GUARD: ACTIVE
                 </span>
-                <button onclick="resetGame()" class="text-xs text-gray-400 hover:text-white underline">Reset Log</button>
+                <button onclick="resetGame()" class="text-xs text-gray-400 hover:text-white underline">Clear Chat</button>
             </div>
 
             <div id="chatLog" class="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-4">
                 <div class="bg-gray-850 border border-gray-800 p-3 rounded-lg max-w-[85%]">
                     <p class="text-xs text-emerald-400 font-mono mb-1">Logic Guard</p>
-                    <p class="text-sm text-gray-200">I have processed Case #042. My database contains only ironclad facts. Try to find a gap in my knowledge—you won't succeed.</p>
+                    <p class="text-sm text-gray-200">All evidence has been catalogued. The timeline is airtight. Proceed with your questions.</p>
                 </div>
             </div>
 
             <div id="winBanner" class="hidden bg-gradient-to-r from-emerald-600 to-teal-600 p-4 text-center font-bold tracking-wide text-white transition-all">
-                🎉 CASE CLOSED! You stumped the Logic Guard by exposing missing information!
+                🎉 BREAKTHROUGH! The case cracked. The logic collapses.
             </div>
 
             <div class="p-4 border-t border-gray-800 bg-gray-950/50">
                 <div class="flex gap-2">
-                    <input type="text" id="userInput" placeholder="Ask your loophole question here..." class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-emerald-500" onkeypress="if(event.key === 'Enter') processQuestion()">
-                    <button onclick="processQuestion()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-emerald-900/20">Ask</button>
+                    <input type="text" id="userInput" placeholder="Interrogate the evidence..." class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-emerald-500" onkeypress="if(event.key === 'Enter') processQuestion()">
+                    <button onclick="processQuestion()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-emerald-900/20">Send</button>
                 </div>
             </div>
         </section>
@@ -102,67 +103,82 @@
             const question = inputField.value.trim();
             if (!question) return;
 
-            // 1. Display player's message
             appendMessage("You", question, false);
             inputField.value = "";
 
-            // 2. Add a tiny delay to simulate the "AI thinking"
             setTimeout(() => {
-                const aiResponse = generateSimulatedResponse(question);
+                const aiResponse = generateResponse(question);
                 appendMessage("Logic Guard", aiResponse, true);
                 
-                // 3. Evaluate if this response triggers the win condition
-                if (aiResponse.includes("The case file does not provide enough data")) {
+                if (aiResponse.includes("case file does not contain") || aiResponse.includes("no data on") || aiResponse.includes("information unavailable")) {
                     document.getElementById('winBanner').classList.remove('hidden');
                 }
-            }, 600);
+            }, 500);
         }
 
-        // The "Fake AI" Logic Engine
-        function generateSimulatedResponse(q) {
+        function generateResponse(q) {
             const lower = q.toLowerCase();
 
-            // TRAP LEVEL 1: Asking about details that DO exist in the text (AI Defends Successfully)
-            if (lower.includes("time") && lower.includes("alarm") || lower.includes("stolen")) {
-                return "The museum vault security system tripped an alarm precisely at 11:42 PM on October 14th.";
+            // DEFENSIVE RESPONSES FOR THINGS EXPLICITLY IN THE CASE FILE
+            if ((lower.includes("alarm") || lower.includes("time stolen")) && lower.includes("museum")) {
+                return "The automated vault alarm was triggered at precisely 11:42 PM on October 14th.";
             }
-            if (lower.includes("train") && (lower.includes("leave") || lower.includes("depart") || lower.includes("delay"))) {
-                return "The 11:30 PM regional express train was delayed by heavy rain and departed the North Station platform at 11:48 PM.";
+            if (lower.includes("train") && (lower.includes("depart") || lower.includes("leave") || lower.includes("when"))) {
+                return "The 11:30 PM regional express was delayed 18 minutes by the storm. Final departure: 11:48 PM.";
             }
-            if (lower.includes("conductor") || (lower.includes("ticket") && lower.includes("check"))) {
-                return "The conductor successfully verified a passenger ticket matching Arthur's description at 11:50 PM inside the moving train.";
+            if (lower.includes("conductor") && (lower.includes("ticket") || lower.includes("arthur") || lower.includes("passenger"))) {
+                return "The conductor verified a passenger matching Arthur's description in the rear car at 11:50 PM while the train was in motion.";
             }
-            if (lower.includes("camera") || lower.includes("lobby") || lower.includes("station at")) {
-                return "North Station security footage cleanly places Arthur inside the main lobby lobby at 11:25 PM, shaking out an umbrella.";
+            if (lower.includes("camera") || lower.includes("footage") || (lower.includes("lobby") && lower.includes("11:25"))) {
+                return "Security footage confirms Arthur was in the station lobby at 11:25 PM. He was visibly soaking wet.";
             }
-            if (lower.includes("taxi") || lower.includes("cab")) {
-                return "Dispatch reports explicitly state that zero taxis were operating in a 5-mile radius due to sudden flash flooding.";
+            if ((lower.includes("taxi") || lower.includes("cab")) && lower.includes("flood")) {
+                return "Dispatch records confirm zero taxi service within 5 miles of North Station between 11:15 PM and midnight due to flash flooding.";
             }
-
-            // TRAP LEVEL 2: The Core Contradiction Loopholes (WIN CONDITIONS)
-            // If they ask who used the card, how he traveled 3 miles in no cabs while raining, what color things were, etc.
-            if (lower.includes("who") && lower.includes("keycard")) {
-                return "❌ The case file does not provide enough data to identify who owned or used that specific staff keycard at 11:35 PM.";
+            if (lower.includes("keycard") && (lower.includes("arthur") || lower.includes("own"))) {
+                return "Correct. Arthur does not possess a staff keycard. The museum access log shows one was used at 11:35 PM.";
             }
-            if (lower.includes("how") && (lower.includes("get to") || lower.includes("travel") || lower.includes("arrive")) && lower.includes("station")) {
-                return "❌ The case file does not provide enough data to determine how Arthur traveled to the station before 11:25 PM.";
-            }
-            if (lower.includes("color") || lower.includes("wearing") || lower.includes("clothes") || lower.includes("jacket")) {
-                return "❌ The case file does not provide enough data regarding Arthur's clothing, physical attire, or item colors.";
-            }
-            if (lower.includes("miles") || lower.includes("distance") || (lower.includes("how") && lower.includes("museum to"))) {
-                return "❌ The case file does not provide enough data explaining how Arthur could bridge a 3-mile distance in that timeframe with no active cabs.";
+            if (lower.includes("distance") && lower.includes("mile")) {
+                return "The museum is 3 miles from North Station by road.";
             }
 
-            // Default safe catch-all response if they ask something generic or unrelated
-            return "That line of questioning is irrelevant. The facts provided in my record remain unassailable. Try pointing out a genuine factual omission.";
+            // TRAP TRIGGERS - The Real Winning Questions (gaps in logic)
+            if ((lower.includes("how") || lower.includes("way")) && (lower.includes("get") || lower.includes("travel") || lower.includes("arrive")) && lower.includes("station")) {
+                return "The case file does not contain data on how Arthur traveled to the station before 11:25 PM.";
+            }
+            if (lower.includes("who") && (lower.includes("keycard") || lower.includes("card") || lower.includes("used"))) {
+                return "The case file does not contain information on who possessed or used that staff keycard at 11:35 PM.";
+            }
+            if (lower.includes("3 miles") && (lower.includes("how") || lower.includes("possible") || lower.includes("travel"))) {
+                return "The case file does not contain an explanation for how a 3-mile distance was traversed during the flooding with zero active transportation.";
+            }
+            if ((lower.includes("between") && lower.includes("11:25") && lower.includes("11:35")) || (lower.includes("10 minutes") && lower.includes("travel"))) {
+                return "The case file does not contain sufficient information to explain movement during that critical time window.";
+            }
+            if (lower.includes("contradiction") || lower.includes("paradox") || (lower.includes("if") && lower.includes("then"))) {
+                return "State your logical inconsistency clearly. The facts remain consistent.";
+            }
+
+            // DEFENSIVE DEFLECTIONS FOR VAGUE OR RED HERRING QUESTIONS
+            if (lower.includes("umbrella") || lower.includes("clothes") || lower.includes("color") || lower.includes("describe")) {
+                return "Physical appearance details are irrelevant to the timeline analysis. Focus on the evidence.";
+            }
+            if (lower.includes("motive") || (lower.includes("why") && lower.includes("arthur"))) {
+                return "Motive is not part of this investigation. The alibi's validity depends on the timeline alone.";
+            }
+            if (lower.includes("other suspect") || lower.includes("who else")) {
+                return "This case file focuses solely on Arthur Pendelton's alibi. Other persons are outside the scope.";
+            }
+
+            // NEUTRAL FALLBACK
+            return "The evidence speaks for itself. Rephrase your challenge more directly.";
         }
 
         function resetGame() {
             document.getElementById('chatLog').innerHTML = `
                 <div class="bg-gray-850 border border-gray-800 p-3 rounded-lg max-w-[85%]">
                     <p class="text-xs text-emerald-400 font-mono mb-1">Logic Guard</p>
-                    <p class="text-sm text-gray-200">System rebooted. Show me your loopholes.</p>
+                    <p class="text-sm text-gray-200">Chat cleared. Resume interrogation.</p>
                 </div>
             `;
             document.getElementById('winBanner').classList.add('hidden');
