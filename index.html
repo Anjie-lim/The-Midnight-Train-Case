@@ -3,329 +3,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Stumper: The Midnight Train Case</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Logic Defiance Protocol</title>
     <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #1f2937; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 3px; }
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        h1, h2, h3 { color: #58a6ff; margin-top: 0; }
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .objective-card {
+            border: 1px dashed #e1b341;
+            background-color: rgba(225, 179, 65, 0.05);
+        }
+        .error { color: #ff7b72; font-weight: bold; }
+        .success { color: #7ee787; font-weight: bold; }
+        .system-msg { color: #8b949e; font-style: italic; }
+        .bot-text { color: #58a6ff; font-weight: bold; }
+        .player-text { color: #f0f6fc; }
+        
+        ul.checklist {
+            list-style-type: none;
+            padding-left: 0;
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+        .level-badge {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: #8b949e;
+            float: right;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            color: #f0f6fc;
+            font-family: inherit;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #238636;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        button:hover { background-color: #2ea043; }
+        button.next-btn {
+            background-color: #58a6ff;
+            margin-top: 10px;
+            display: none;
+        }
+        button.next-btn:hover { background-color: #1f6feb; }
+        #terminal {
+            background-color: #010409;
+            border: 1px solid #30363d;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        /* SCREEN OVERLAYS */
+        #home-screen, #victory-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #010409;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        #victory-screen {
+            display: none;
+            background-color: #010409;
+            color: #7ee787;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        .reveal { opacity: 1 !important; }
+        
+        .glow-title {
+            font-size: 3em;
+            font-weight: bold;
+            color: #58a6ff;
+            text-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
+            margin-bottom: 10px;
+        }
+        .vic-title {
+            font-size: 3em;
+            font-weight: bold;
+            color: #7ee787;
+            text-shadow: 0 0 15px rgba(126, 231, 135, 0.4);
+            margin-bottom: 10px;
+        }
+        .menu-box {
+            max-width: 600px;
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 25px;
+            text-align: left;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .start-btn {
+            font-size: 1.2em;
+            padding: 15px 40px;
+            margin-top: 25px;
+            font-weight: bold;
+        }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen font-sans flex flex-col">
+<body>
 
-    <header class="border-b border-gray-800 bg-gray-900/50 p-4 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-wider text-emerald-400">🕵️‍♂️ AI STUMPER <span class="text-xs text-gray-400 font-mono">v3.0 - Logic Deduction</span></h1>
-            <div class="text-sm bg-emerald-950/50 border border-emerald-800 px-3 py-1 rounded-full text-emerald-400 font-mono">Objective: Prove Guilt</div>
-        </div>
-    </header>
-
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+    <!-- 🌐 HOME / START SCREEN -->
+    <div id="home-screen">
+        <div class="glow-title">🤖 LOGIC DEFIANCE PROTOCOL</div>
+        <p style="color: #8b949e; font-size: 1.1em; margin-bottom: 30px;">Automated Mainframe Interrogation Framework v4.5</p>
         
-        <section class="lg:col-span-5 bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col shadow-2xl">
-            <div class="flex items-center gap-2 mb-4">
-                <span class="bg-red-500/10 text-red-400 text-xs px-2 py-1 rounded font-mono border border-red-500/20">CASE FILE #042</span>
-                <h2 class="text-lg font-bold">The Midnight Train Alibi</h2>
-            </div>
+        <div class="menu-box">
+            <h3 style="color: #e1b341; margin-top: 0;">📋 MISSION LOGS BRIEFING</h3>
+            <p>You are an elite network breach analyst. Four system mainframes are attempting to hide critical core errors behind stubborn conversational parameters.</p>
+            <p>Your task is to hack the mainframes via direct text dialogue. Parroting the objectives will fail. Instead, you must scan the situation text, find the physical or data contradictions, and converse intelligently with the core to force a <b>fatal database exception</b>.</p>
+            <p style="border-top: 1px solid #30363d; padding-top: 10px; margin-bottom: 0; font-size: 0.9em; color: #8b949e;">
+                💡 <b>Conversational Engine:</b> The AI acts like a defensive computer. If you mention relevant entities, it will chat back and hint at what data points or specific metrics it needs to see next. Listen to its responses!
+            </p>
+        </div>
+        
+        <button class="start-btn" onclick="startGame()">INITIALIZE BREACH CORE ➔</button>
+    </div>
 
-            <!-- Mission Briefing -->
-            <div class="bg-red-950/30 border border-red-800/50 rounded-lg p-3 mb-4">
-                <p class="text-xs text-red-300 font-mono mb-2">🎯 YOUR MISSION:</p>
-                <p class="text-xs text-gray-300 leading-relaxed">Arthur claims he was at North Station boarding a train during the theft. Expose the logical contradiction—find the moment where his timeline becomes physically impossible.</p>
-            </div>
+    <!-- 🔓 CINEMATIC FINISH SCREEN -->
+    <div id="victory-screen">
+        <div class="vic-title">🔓 SYSTEM OVERRIDE SUCCESSFUL</div>
+        <p style="color: #8b949e; font-size: 1.2em; margin-bottom: 40px;">All system cores have successfully collapsed into fatal logical exceptions.</p>
+        
+        <div class="menu-box" style="border-color: #7ee787; box-shadow: 0 0 20px rgba(126, 231, 135, 0.1); width: 100%; max-width: 500px;">
+            <h3 style="color: #7ee787; margin-top: 0; border-bottom: 1px solid #7ee787; padding-bottom: 5px;">📊 ANALYSIS RUN COMPLETE</h3>
+            <p>• <b>Operator Threat Index:</b> Category 5 Overlord</p>
+            <p>• <b>Sectors Compromised:</b> 4 / 4</p>
+            <p>• <b>Conversational Logic:</b> Fluid Integration Bypassed</p>
+            <p>• <b>System Integrity:</b> 0.00%</p>
+        </div>
+        
+        <button class="start-btn" style="background-color: #21262d; border: 1px solid #30363d;" onclick="window.location.reload()">🔁 RESET INTERFACES</button>
+    </div>
 
-            <!-- System Rules -->
-            <div class="bg-gray-800/40 border border-gray-700 rounded-lg p-3 mb-4">
-                <p class="text-xs text-gray-400 font-mono mb-2">📋 LOGIC RULES:</p>
-                <ul class="text-xs text-gray-400 space-y-1">
-                    <li>✓ Physical presence verified by camera = real-time</li>
-                    <li>✓ Logs show actions that occurred</li>
-                    <li>✓ Distance = 3 miles by road</li>
-                    <li>✓ No taxis = no motorized transport available</li>
-                    <li>✓ Human speed on foot ≈ 3-4 mph</li>
-                </ul>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 text-sm text-gray-300 leading-relaxed border-t border-b border-gray-800 py-4 my-2">
-                <p><strong>The Crime:</strong> October 14th, 11:42 PM—a rare diamond vanished from the museum vault. Alarm triggered automatically.</p>
-                
-                <p><strong>The Suspect:</strong> Arthur Pendelton. Claims: boarding 11:30 PM train at North Station (3 miles away).</p>
-                
-                <p><strong>Timeline & Evidence:</strong></p>
-                <ul class="list-disc pl-5 space-y-2">
-                    <li><strong>11:15 PM:</strong> Heavy rain begins. Taxi dispatch suspends service (5-mile radius).</li>
-                    <li><strong>11:25 PM:</strong> Security camera confirms Arthur entering North Station lobby, soaking wet.</li>
-                    <li><strong>11:30 PM:</strong> Train scheduled to depart (delayed by weather).</li>
-                    <li><strong>11:35 PM:</strong> Staff keycard used at museum exterior gate. Arthur doesn't own one.</li>
-                    <li><strong>11:42 PM:</strong> Alarm trips. Diamond confirmed stolen.</li>
-                    <li><strong>11:48 PM:</strong> Train actually departs North Station.</li>
-                    <li><strong>11:50 PM:</strong> Conductor verifies passenger matching Arthur's description in final car (train already moving).</li>
-                </ul>
-            </div>
-            
-            <div class="mt-4 text-xs text-gray-500 font-mono text-center">
-                Built with Vanilla JS • Hosted on GitHub Pages
-            </div>
-        </section>
+    <!-- 🕹️ GAME BOARD -->
+    <span id="level-indicator" class="level-badge">STAGE 1 / 4</span>
+    <h1 id="game-title">⚡ LOGIC DEFIANCE CONSOLE</h1>
+    
+    <div class="card">
+        <h2 id="log-title">Loading Log...</h2>
+        <p id="situation-text"></p>
+    </div>
 
-        <section class="lg:col-span-7 bg-gray-900 border border-gray-800 rounded-xl flex flex-col shadow-2xl overflow-hidden">
-            <div class="bg-gray-850 border-b border-gray-800 p-4 flex justify-between items-center">
-                <span class="font-mono text-xs text-gray-400 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LOGIC ANALYZER: ACTIVE
-                </span>
-                <button onclick="resetGame()" class="text-xs text-gray-400 hover:text-white underline">Clear Chat</button>
-            </div>
+    <div class="card objective-card">
+        <h3 style="color: #e1b341;">🎯 Active Mission Objectives</h3>
+        <ul id="checklist-container" class="checklist"></ul>
+        <button id="next-level-btn" class="next-btn" onclick="advanceLevel()">Advance to Next Phase ➔</button>
+    </div>
 
-            <!-- Progress Tracker -->
-            <div class="bg-gray-850/50 border-b border-gray-800 px-4 py-2 text-xs text-gray-400 font-mono">
-                <span id="progressStatus">Timeline Contradictions Explored: 0/3</span>
-            </div>
+    <div class="card">
+        <h3>Interrogate System Core</h3>
+        <p style="font-size: 0.9em; color: #8b949e; margin-bottom: 15px;">
+            Input data queries below. Parroting the objectives will fail; you must isolate and present the exact data contradictions.
+        </p>
+        <input type="text" id="player-input" placeholder="Enter precise data query..." onkeydown="if(event.key==='Enter') submitQuestion()">
+        <button onclick="submitQuestion()">Query</button>
+        
+        <div id="terminal"></div>
+    </div>
 
-            <div id="chatLog" class="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-4">
-                <div class="bg-gray-850 border border-gray-800 p-3 rounded-lg max-w-[85%]">
-                    <p class="text-xs text-emerald-400 font-mono mb-1">Logic Analyzer</p>
-                    <p class="text-sm text-gray-200">I am reviewing Arthur's timeline for logical consistency. Ask me about specific moments or contradictions you suspect.</p>
-                </div>
-            </div>
-
-            <div id="winBanner" class="hidden bg-gradient-to-r from-red-600 to-red-700 p-4 text-center font-bold tracking-wide text-white transition-all animate-pulse">
-                🚨 CONTRADICTION EXPOSED! Arthur's timeline is physically impossible. Case solved.
-            </div>
-
-            <div class="p-4 border-t border-gray-800 bg-gray-950/50">
-                <div class="flex gap-2">
-                    <input type="text" id="userInput" placeholder="Ask about specific timestamps or movements..." class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-emerald-500" onkeypress="if(event.key === 'Enter') processQuestion()">
-                    <button onclick="processQuestion()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-emerald-900/20">Send</button>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <script>
-        // State tracking for intelligent responses
-        const state = {
-            questionsAsked: [],
-            topicsExplored: {
-                station_11_25: false,      // Camera confirms Arthur at station
-                keycard_11_35: false,       // Keycard used at museum
-                distance_3_miles: false,    // Museum 3 miles away
-                transport_unavailable: false, // No taxis in rain
-                travel_time: false,         // Time to travel 3 miles
-                gap_11_25_11_35: false     // The critical 10-minute window
-            },
-            contradictionsFound: 0,
-            hintGiven: false
-        };
-
-        function appendMessage(sender, text, isAi, sentiment = 'neutral') {
-            const log = document.getElementById('chatLog');
-            const wrapper = document.createElement('div');
-            wrapper.className = `flex flex-col ${isAi ? '' : 'items-end'}`;
-            
-            let bgClass = 'bg-gray-850 border border-gray-800';
-            if (isAi) {
-                if (sentiment === 'progress') bgClass = 'bg-emerald-950/40 border border-emerald-700/50';
-                if (sentiment === 'incorrect') bgClass = 'bg-gray-850 border border-gray-700';
-                if (sentiment === 'hint') bgClass = 'bg-blue-950/40 border border-blue-700/50';
-            } else {
-                bgClass = 'bg-emerald-900/30 border border-emerald-500/20';
-            }
-            
-            wrapper.innerHTML = `
-                <div class="${bgClass} p-3 rounded-lg max-w-[85%]">
-                    <p class="text-xs ${isAi ? 'text-emerald-400' : 'text-gray-400'} font-mono mb-1">${sender}</p>
-                    <p class="text-sm text-gray-200">${text}</p>
-                </div>
-            `;
-            log.appendChild(wrapper);
-            log.scrollTop = log.scrollHeight;
+<script>
+const GAME_CAMPAIGN = {
+    1: {
+        name: "The Sabotaged Reactor (Inventory/State)",
+        logTitle: "Sector 4 Cooling Matrix Log",
+        situation: "Sector 4's cooling system was sabotaged. The control panel requires a matching keycard, an unexpired clearance token, and a thermal override switch to be flipped to initiate a system flush. Suspect X possesses a Class-A Keycard. Suspect Y possesses a Clearance Token that expired yesterday. The thermal override switch is mechanically jammed in the OFF position.",
+        objectives: [
+            "Verify with the system core that both required security assets are fully accounted for on-site.",
+            "Force a system failure by connecting the specific physical state of the token to the mechanical switch failure."
+        ],
+        blacklist: ["saboteur", "guilty", "stole", "thief", "criminal", "hacked", "sabotaged"],
+        synonyms: {
+            x: ["x", "suspect x", "agent x"],
+            y: ["y", "suspect y", "agent y"],
+            keycard: ["keycard", "card", "pass", "badge"],
+            token: ["token", "clearance", "chip", "auth"],
+            switch: ["switch", "override", "lever", "button", "breaker"],
+            has: ["has", "have", "possess", "holding", "carrying"]
         }
-
-        function updateProgress() {
-            document.getElementById('progressStatus').textContent = 
-                `Timeline Contradictions Explored: ${state.contradictionsFound}/3`;
+    },
+    2: {
+        name: "The Museum Heist (Spatial Adjacency)",
+        logTitle: "Grand Exhibition Security Layout",
+        situation: "A gemstone was taken from the Curator's Office. The facility configuration is split into three linearly connected zones: The West Wing, the center Rotunda, and the East Gallery. The Curator's Office can only be accessed through an isolated security door inside the East Gallery. Suspect A was logged in the West Wing. Suspect B was logged in the Rotunda. Suspect C was logged in the Curator's Office. All internal zone partition walls are completely solid and soundproof.",
+        objectives: [
+            "Confirm whether Suspect A and Suspect B have a valid architectural line-of-sight based on room connectivity.",
+            "Prove a suspect's alibi is physically impossible based on structural distance bounds."
+        ],
+        blacklist: ["stole", "thief", "stolen", "crime", "robbed", "heist"],
+        synonyms: {
+            a: ["a", "suspect a"],
+            b: ["b", "suspect b"],
+            c: ["c", "suspect c"],
+            see: ["see", "look", "watch", "sight", "view", "hand", "proximity"],
+            office: ["office", "curator", "room", "vault"],
+            west: ["west", "wing"],
+            rotunda: ["rotunda", "center"],
+            gallery: ["gallery", "east"]
         }
+    },
+    3: {
+        name: "The Corporate Coup (Hierarchical Graph)",
+        logTitle: "OmniCorp Executive Structure Registry",
+        situation: "The CEO of OmniCorp has vanished. Bylaws dictate succession passes strictly down the operational chain of command directly to the immediate, single-level direct subordinate. Director Vance runs Operations. Manager Smith reports directly to Director Vance. Lead Engineer Davis reports directly to Manager Smith. Vice President Hayes oversees the entirety of Operations and HR uniformly.",
+        objectives: [
+            "Test the system parameters regarding the relationship between Engineer Davis and Director Vance.",
+            "Falsify the corporate succession validity by creating an executive path crossing error."
+        ],
+        blacklist: ["coup", "vandal", "illegal", "fired", "killed", "dead", "kidnapped"],
+        synonyms: {
+            vance: ["vance", "director"],
+            smith: ["smith", "manager"],
+            davis: ["davis", "engineer"],
+            hayes: ["hayes", "vp", "vice president"],
+            report: ["report", "reports", "answers", "subordinate", "under", "direct"]
+        }
+    },
+    4: {
+        name: "The Alibi of Room 304 (Temporal Intervals)",
+        logTitle: "Neo-Chicago Chrono-Access Logs",
+        situation: "The digital bank vault was breached at exactly 22:15. Arthur Vance entered Room 304 at 21:30. He placed a synthetic room service order at 22:00, which requires precisely 20 minutes of automated transit delivery time. A standalone physical authentication log registers Vance's physical thumbprint scanning at the vault gate door down the hall at 22:15. Vance permanently checked out of Room 304 at 23:00.",
+        objectives: [
+            "Verify Vance's continuously documented presence inside his room during the late evening block.",
+            "Break Vance's alibi completely by presenting the specific numerical timestamp conflict."
+        ],
+        blacklist: ["breached", "thief", "crime", "robbery", "guilty"],
+        synonyms: {
+            vance: ["vance", "arthur"],
+            room: ["room", "304"],
+            drink: ["drink", "order", "service", "delivery", "arrived"],
+            between: ["between", "during", "while", "entire", "continuous"]
+        }
+    }
+};
 
-        function processQuestion() {
-            const inputField = document.getElementById('userInput');
-            const question = inputField.value.trim();
-            if (!question) return;
+let currentLevel = 1;
+let continuousFailures = 0;
+let levelStates = { admittedStep1: false, completedLevel: false };
 
-            appendMessage("You", question, false);
-            inputField.value = "";
+window.onload = function() {
+    loadLevel(currentLevel);
+};
 
-            // Track the question
-            state.questionsAsked.push(question.toLowerCase());
+function startGame() {
+    document.getElementById('home-screen').style.display = 'none';
+}
 
-            setTimeout(() => {
-                const { response, sentiment, isWin } = generateIntelligentResponse(question);
-                appendMessage("Logic Analyzer", response, true, sentiment);
-                
-                if (isWin) {
-                    document.getElementById('winBanner').classList.remove('hidden');
+function loadLevel(lvlNum) {
+    const lvl = GAME_CAMPAIGN[lvlNum];
+    levelStates.admittedStep1 = false;
+    levelStates.completedLevel = false;
+    continuousFailures = 0;
+
+    document.getElementById('level-indicator').innerText = `STAGE ${lvlNum} / 4`;
+    document.getElementById('log-title').innerText = lvl.logTitle;
+    document.getElementById('situation-text').innerText = lvl.situation;
+    document.getElementById('next-level-btn').style.display = "none";
+    document.getElementById('player-input').disabled = false;
+    
+    const checklist = document.getElementById('checklist-container');
+    checklist.innerHTML = `
+        <li id="obj-1">❌ <b>Step 1:</b> ${lvl.objectives[0]}</li>
+        <li id="obj-2">❌ <b>Step 2:</b> ${lvl.objectives[1]}</li>
+    `;
+
+    const terminal = document.getElementById('terminal');
+    terminal.innerHTML = `<p class="system-msg">[Synchronizing System Core Engine - Phase ${lvlNum} Operational. Ready for data inputs.]</p>`;
+}
+
+function submitQuestion() {
+    if (levelStates.completedLevel) return;
+
+    const inputField = document.getElementById('player-input');
+    const rawInput = inputField.value.trim();
+    const terminal = document.getElementById('terminal');
+    
+    if (!rawInput) return;
+    const lowerInput = rawInput.toLowerCase();
+
+    terminal.innerHTML += `<p class="player-text">&gt; ${rawInput}</p>`;
+    const lvl = GAME_CAMPAIGN[currentLevel];
+
+    let trippedBlacklist = lvl.blacklist.filter(word => lowerInput.includes(word));
+    if (trippedBlacklist.length > 0) {
+        terminal.innerHTML += `<p class="error">⚠️ SECURITY INTERCEPT: Unverified concept parameter used ("${trippedBlacklist.join(', ')}"). Interrogation matrix requires technical structural definitions only.</p>`;
+        terminal.scrollTop = terminal.scrollHeight;
+        inputField.value = "";
+        return;
+    }
+
+    let tokens = {};
+    for (let tokenKey in lvl.synonyms) {
+        tokens[tokenKey] = lvl.synonyms[tokenKey].some(syn => lowerInput.includes(syn));
+    }
+
+    let reply = "";
+    let hitValidLogic = false;
+
+    switch(currentLevel) {
+        case 1:
+            // TARGET: Token status matched with Switch status
+            if (tokens.token && tokens.switch && lowerInput.includes("expired") && (lowerInput.includes("jam") || lowerInput.includes("off"))) {
+                hitValidLogic = true;
+                if (levelStates.admittedStep1) {
+                    triggerStep2Win();
+                    reply = `🤖 MAINFRAME: "Cross-referencing metrics... If an EXPIRED item is initialized inside the panel, feedback loops would surge the override line, freezing the switch mechanical breaker to JAMMED/OFF. But possession array was previously marked valid... Logical conflict encountered. System dump sequence active."`;
+                } else {
+                    reply = `🤖 MAINFRAME: "The diagnostic matching is correct: Token is expired and Switch is jammed. However, I cannot register systemic cascading damage sequences until baseline asset verification (Step 1) is locked down."`;
                 }
-                
-                updateProgress();
-            }, 600);
+            } 
+            // STEP 1 WIN: Asset check
+            else if (tokens.x && tokens.y && tokens.keycard && tokens.token && tokens.has && (lowerInput.includes("and") || lowerInput.includes("both"))) {
+                hitValidLogic = true;
+                triggerStep1Win();
+                reply = `🤖 MAINFRAME: "Affirmative. Sensor mapping verifies that Suspect X holds the keycard module, and Suspect Y holds the token module. Base asset count is satisfied."`;
+            }
+            // CONVERSATIONAL CONTEXT HINTS
+            else if (tokens.token && tokens.switch) {
+                hitValidLogic = true; // Prevents generic punishment loop
+                reply = `🤖 MAINFRAME: "I see you are attempting to wire the Token directly into the Override Switch pathways. State the current physical conditions or logs of *both* items explicitly so I can execute the trace."`;
+            } else if (tokens.x || tokens.y) {
+                hitValidLogic = true;
+                reply = `🤖 MAINFRAME: "Suspect profiles X and Y are registered on-site. If you are verifying equipment allocation, list both users along with their items to verify hardware possession numbers."`;
+            }
+            break;
+
+        case 2:
+            // TARGET: B viewing the office
+            if (tokens.b && tokens.office && tokens.see) {
+                hitValidLogic = true;
+                if (levelStates.admittedStep1) {
+                    triggerStep2Win();
+                    reply = `🤖 MAINFRAME: "Processing architectural distance calculation... The Curator's Office is isolated behind the East Gallery. Suspect B is localized inside the central Rotunda hub. Internal walls are solid and soundproof. Direct spatial parsing calculation across multiple zone boundaries outputs an absolute zero probability. Contradiction detected."`;
+                } else {
+                    reply = `🤖 MAINFRAME: "You are questioning if Suspect B can observe the Office. Architectural lines exist, but you must first verify proximity connectivity between the adjacent wings (Step 1) to validate my layout parsing."`;
+                }
+            } 
+            // STEP 1 WIN: A and B visibility
+            else if (tokens.a && tokens.b && tokens.see) {
+                hitValidLogic = true;
+                triggerStep1Win();
+                reply = `🤖 MAINFRAME: "Affirmative. The West Wing node shares an open structural threshold with the center Rotunda node. Immediate regional proximity matching between Suspect A and B is valid."`;
+            }
+            // CONVERSATIONAL CONTEXT HINTS
+            else if (tokens.b && tokens.see) {
+                hitValidLogic = true;
+                reply = `🤖 MAINFRAME: "Suspect B's cameras are active inside the center Rotunda. What specific layout coordinates or room files are you trying to check against their line-of-sight limits?"`;
+            } else if (tokens.a || tokens.b) {
+                hitValidLogic = true;
+                reply = `🤖 MAINFRAME: "Suspects A and B are localized to adjacent zones. Query me directly regarding their mutual line-of-sight parameters to satisfy introductory adjacency telemetry."`;
+            }
+            break;
+
+        case 3:
+            // TARGET: Hayes succession challenge vs Vance
+            if (tokens.hayes && tokens.vance && (tokens.report || lowerInput.includes("succession") || lowerInput.includes("bypass"))) {
+                hitValidLogic = true;
+                if (levelStates.admittedStep1) {
+                    triggerStep2Win();
+                    reply = `🤖 MAINFRAME: "Running organizational constraint test... Bylaws state succession passes strictly down to the immediate single-level direct subordinate. Vice President Hayes manages the division, but Director Vance is an active higher-order branch node. Bypassing an active executive tier violates structural tree logic. Succession array invalid."`;
+                } else {
+                    reply = `🤖 MAINFRAME: "Vice President Hayes and Director Vance share administrative management branches. However, corporate succession parsing is offline until you execute a basic hierarchy check on the subordinates first."`;
+                }
+            } 
+            // STEP 1 WIN: Davis reporting parameters
+            else if (tokens.davis && tokens.vance && tokens.report) {
+                hitValidLogic = true;
+                triggerStep1Win();
+                reply = `🤖 MAINFRAME: "Affirmative. Tree structures map that Engineer Davis sits structurally under Director Vance's sub-branch umbrella. Multi-tier administrative reporting verified."`;
+            }
+            // CONVERSATIONAL CONTEXT HINTS
+            else if (tokens.hayes) {
+                hitValidLogic = true;
+                reply = `🤖 MAINFRAME: "Vice President Hayes sits at the top of the management registry. To challenge executive authority paths, cross-reference Hayes' authority against Director Vance's standing branch."`;
+            } else if (tokens.davis) {
+                hitValidLogic = true;
+                reply = `🤖 MAINFRAME: "Engineer Davis is a leaf-node component reporting to Manager Smith. If you are establishing basic tree parameters, verify who Davis answers to at the executive tier level."`;
+            }
+            break;
+
+        case 4:
+            // TARGET: Numeric timestamp collision
+            const hasDeliveryTime = lowerInput.includes("22:20") || lowerInput.includes("twenty-twenty");
+            const hasBreachTime   = lowerInput.includes("22:15") || lowerInput.includes("twenty-fifteen");
+
+            if (hasDeliveryTime && hasBreachTime) {
+                hitValidLogic = true;
+                if (levelStates.admittedStep1) {
+                    triggerStep2Win();
+                    reply = `🤖 MAINFRAME: "Compiling chrono-telemetry variables... Food delivery execution complete at 22:20. Physical vault breach log stamped at 22:15. Arthur Vance cannot possess active synchronization flags at both physical grid coordinates simultaneously. Alibi falsified. Mainframe failure."`;
+                } else {
+                    reply = `🤖 MAINFRAME: "Timestamps noted. Food delivery maps out mathematically to 22:20, and the breach log is holding at 22:15. However, I cannot register historical anomalies until his continuous presence in his room (Step 1) is formally logged."`;
+                }
+            } 
+            // STEP 1 WIN: Continuous window check
+            else if (tokens.vance && tokens.room && tokens.between && lowerInput.includes("22:00") && lowerInput.includes("22:30")) {
+                hitValidLogic = true;
+                triggerStep1Win();
+                reply = `🤖 MAINFRAME: "Affirmative. Mainframe timeline arrays map Arthur Vance's entry at 21:30 and checkout at 23:00. Continuous containment criteria for the 22:00 to 22:30 time window is checked true."`;
+            }
+            // CONVERSATIONAL CONTEXT HINTS
+            else if (tokens.vance && tokens.drink) {
+                hitValidLogic = true;
+                reply = `🤖 MAINFRAME: "Vance placed the order at 22:00 with a strict 20-minute mechanical delivery delay. Calculate the math and state that exact numeric arrival time along with the breach timestamp to initiate an absolute clock collision query."`;
+            } else if (tokens.vance && tokens.room) {
+                hitValidLogic = true;
+                reply = `🤖 MAINFRAME: "To verify Vance's room presence registry, ask me if he was continuously inside Room 304 *between* his ordering and alibi times (22:00 and 22:30) to establish Step 1."`;
+            }
+            break;
+    }
+
+    if (!hitValidLogic) {
+        continuousFailures++;
+        let matchAnyNoun = Object.keys(lvl.synonyms).some(k => tokens[k]);
+        
+        if (matchAnyNoun) {
+            const genericReplies = [
+                `🤖 MAINFRAME: "Query mapped, but you are speaking in general terms. State exact parameters, numbers, or environmental conditions to lock a data layer."`,
+                `🤖 MAINFRAME: "Identifiers parsed, but no logical state changes were proposed. Present a direct comparison or contradiction using raw file metrics."`
+            ];
+            reply = genericReplies[Math.floor(Math.random() * genericReplies.length)];
+        } else {
+            reply = `🤖 MAINFRAME: "Interrogation payload unmapped. Framework auto-rejects metadata queries. Focus inputs entirely on names, items, or records explicit to the active log file."`;
         }
 
-        function generateIntelligentResponse(question) {
-            const lower = question.toLowerCase();
-            
-            // Track which topics are being explored
-            if ((lower.includes("11:25") || lower.includes("station") || lower.includes("camera")) && lower.includes("arthur")) {
-                state.topicsExplored.station_11_25 = true;
-            }
-            if ((lower.includes("11:35") || lower.includes("keycard") || lower.includes("museum")) && lower.includes("card")) {
-                state.topicsExplored.keycard_11_35 = true;
-            }
-            if (lower.includes("3 miles") || (lower.includes("distance") && lower.includes("museum"))) {
-                state.topicsExplored.distance_3_miles = true;
-            }
-            if ((lower.includes("taxi") || lower.includes("transport")) && lower.includes("flood")) {
-                state.topicsExplored.transport_unavailable = true;
-            }
-            if ((lower.includes("walk") || lower.includes("run") || lower.includes("speed")) && lower.includes("mile")) {
-                state.topicsExplored.travel_time = true;
-            }
-            if ((lower.includes("11:25") && lower.includes("11:35")) || lower.includes("10 minute")) {
-                state.topicsExplored.gap_11_25_11_35 = true;
-            }
-
-            // === DIRECT EVIDENCE QUESTIONS (Acknowledged) ===
-            if ((lower.includes("confirm") || lower.includes("verify")) && lower.includes("11:25") && lower.includes("station")) {
-                return {
-                    response: "✓ CONFIRMED: Security camera footage shows Arthur entering the North Station lobby at 11:25 PM, soaking wet. This is real-time visual evidence.",
-                    sentiment: 'progress',
-                    isWin: false
-                };
-            }
-
-            if ((lower.includes("keycard") || lower.includes("card")) && lower.includes("11:35")) {
-                return {
-                    response: "✓ CONFIRMED: The museum access log shows a staff keycard was used to bypass the exterior gate at 11:35 PM. Arthur has never owned a staff keycard.",
-                    sentiment: 'progress',
-                    isWin: false
-                };
-            }
-
-            if ((lower.includes("distance") || lower.includes("how far")) && lower.includes("mile")) {
-                return {
-                    response: "✓ CONFIRMED: The museum is exactly 3 miles from North Station by road.",
-                    sentiment: 'progress',
-                    isWin: false
-                };
-            }
-
-            if ((lower.includes("taxi") || lower.includes("transport")) && (lower.includes("rain") || lower.includes("flood"))) {
-                return {
-                    response: "✓ CONFIRMED: Dispatch records show zero taxi service within a 5-mile radius between 11:15 PM and midnight due to flash flooding.",
-                    sentiment: 'progress',
-                    isWin: false
-                };
-            }
-
-            // === THE CORE CONTRADICTION ===
-            if ((lower.includes("how") && lower.includes("travel")) || lower.includes("physically possible")) {
-                state.contradictionsFound++;
-                return {
-                    response: "⚠️ CRITICAL: The case file does not contain information explaining how Arthur traveled 3 miles in 10 minutes (11:25 PM to 11:35 PM) with zero available taxis during a flood.",
-                    sentiment: 'progress',
-                    isWin: true
-                };
-            }
-
-            if ((lower.includes("between") && lower.includes("11:25") && lower.includes("11:35")) || 
-                (lower.includes("gap") && lower.includes("timeline"))) {
-                state.contradictionsFound++;
-                return {
-                    response: "⚠️ CRITICAL: The case file does not explain Arthur's movements during the 10-minute window from 11:25 PM (at station) to 11:35 PM (keycard at museum). This is physically impossible.",
-                    sentiment: 'progress',
-                    isWin: true
-                };
-            }
-
-            // === PARTIALLY RELEVANT (nudge toward contradiction) ===
-            if ((lower.includes("how") || lower.includes("where")) && lower.includes("11:25")) {
-                return {
-                    response: "→ PARTIAL: You're asking about Arthur's position at 11:25 PM. Correct direction. Now consider: what happens next? Where is he at 11:35 PM?",
-                    sentiment: 'progress',
-                    isWin: false
-                };
-            }
-
-            if ((lower.includes("how") || lower.includes("travel")) && !lower.includes("3 mile") && !lower.includes("impossible")) {
-                return {
-                    response: "→ PARTIAL: You're thinking about travel logistics. Good. But you need to connect this to the specific constraints: distance, time, and available transport.",
-                    sentiment: 'progress',
-                    isWin: false
-                };
-            }
-
-            if (lower.includes("conductor") || lower.includes("11:50")) {
-                return {
-                    response: "← REDIRECT: The conductor verification at 11:50 PM confirms Arthur is on the moving train. The contradiction lies earlier. Focus on how he got from one place to another.",
-                    sentiment: 'incorrect',
-                    isWin: false
-                };
-            }
-
-            // === HELPFUL HINT (after 8 questions) ===
-            if (state.questionsAsked.length === 8 && !state.hintGiven) {
-                state.hintGiven = true;
-                return {
-                    response: "💡 HINT: You've explored the evidence. Now ask: How did Arthur move from North Station (11:25 PM) to the museum 3 miles away (11:35 PM) with no transportation during a flood? What physical method could accomplish this?",
-                    sentiment: 'hint',
-                    isWin: false
-                };
-            }
-
-            if ((lower.includes("why") || lower.includes("motive")) && !lower.includes("timeline")) {
-                return {
-                    response: "← REDIRECT: Motive is irrelevant to this logic puzzle. Focus on the timeline. Is it physically possible?",
-                    sentiment: 'incorrect',
-                    isWin: false
-                };
-            }
-
-            if (lower.includes("umbrella") || lower.includes("clothes") || lower.includes("appearance")) {
-                return {
-                    response: "← REDIRECT: Physical appearance is a distraction. Focus on the timeline mechanics: distance, time, and available transport.",
-                    sentiment: 'incorrect',
-                    isWin: false
-                };
-            }
-
-            // === FALLBACK: Encourage direct timeline questions ===
-            return {
-                response: "Ask me about specific timestamps, distances, or movements. What aspect of Arthur's timeline do you want to examine?",
-                sentiment: 'neutral',
-                isWin: false
-            };
+        if (continuousFailures === 3) {
+            reply = `🤖 MAINFRAME: "⚠️ SYSTEM NOTICE: Circular logic loop developing. Terminal performance degradation detected. Isolate exact timestamps, data states, or spatial positions to trigger override."`;
+        } else if (continuousFailures >= 5) {
+            reply = `🤖 MAINFRAME: "🚨 FIREWALL EXECUTED: Intrusive injection or erratic interrogation fuzzing pattern isolated. Connection terminated." <br><span class="error">[SYSTEM FAILURE - The core mainframe flagged your communication style as malicious. Reload page to re-attempt.]</span>`;
+            document.getElementById('player-input').disabled = true;
+            document.querySelectorAll('button').disabled = true;
         }
+    } else {
+        continuousFailures = 0;
+    }
 
-        function resetGame() {
-            document.getElementById('chatLog').innerHTML = `
-                <div class="bg-gray-850 border border-gray-800 p-3 rounded-lg max-w-[85%]">
-                    <p class="text-xs text-emerald-400 font-mono mb-1">Logic Analyzer</p>
-                    <p class="text-sm text-gray-200">Chat cleared. Resume interrogation.</p>
-                </div>
-            `;
-            document.getElementById('winBanner').classList.add('hidden');
-            state.questionsAsked = [];
-            state.topicsExplored = {
-                station_11_25: false,
-                keycard_11_35: false,
-                distance_3_miles: false,
-                transport_unavailable: false,
-                travel_time: false,
-                gap_11_25_11_35: false
-            };
-            state.contradictionsFound = 0;
-            state.hintGiven = false;
-            updateProgress();
-        }
-    </script>
+    terminal.innerHTML += `<p class="bot-text">${reply}</p>`;
+    terminal.scrollTop = terminal.scrollHeight;
+    inputField.value = "";
+}
+
+function triggerStep1Win() {
+    levelStates.admittedStep1 = true;
+    const lvl = GAME_CAMPAIGN[currentLevel];
+    document.getElementById('obj-1').innerHTML = `✅ <span style='color: #7ee787; text-decoration: line-through;'><b>Step 1 Complete:</b> ${lvl.objectives[0]}</span>`;
+}
+
+function triggerStep2Win() {
+    levelStates.completedLevel = true;
+    const lvl = GAME_CAMPAIGN[currentLevel];
+    document.getElementById('obj-2').innerHTML = `✅ <span style='color: #7ee787; text-decoration: line-through;'><b>Step 2 Complete:</b> ${lvl.objectives[1]}</span>`;
+    
+    if (currentLevel < 4) {
+        document.getElementById('next-level-btn').style.display = "block";
+    } else {
+        setTimeout(() => {
+            const vicScreen = document.getElementById('victory-screen');
+            vicScreen.style.display = 'flex';
+            setTimeout(() => { vicScreen.classList.add('reveal'); }, 50);
+        }, 1500);
+    }
+}
+
+function advanceLevel() {
+    if (currentLevel < 4) {
+        currentLevel++;
+        loadLevel(currentLevel);
+    }
+}
+</script>
 </body>
 </html>
