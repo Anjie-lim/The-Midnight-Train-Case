@@ -3,506 +3,469 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logic Defiance Protocol</title>
+    <title>The Midnight Train Case - Forensic Sandbox</title>
     <style>
         body {
-            background-color: #0d1117;
-            color: #c9d1d9;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #120d1a;
+            color: #e6e1ed;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             padding: 20px;
-            max-width: 850px;
+            max-width: 650px;
             margin: 0 auto;
         }
-        h1, h2, h3 { color: #58a6ff; margin-top: 0; }
-        .card {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 6px;
+        h1, h2 { color: #ff65a3; text-align: center; margin-top: 0; }
+        .emochi-container {
+            background: linear-gradient(180deg, #241933 0%, #1a1226 100%);
+            border: 2px solid #ff65a3;
+            border-radius: 20px;
             padding: 20px;
-            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(255, 101, 163, 0.2);
         }
-        .objective-card {
-            border: 1px dashed #e1b341;
-            background-color: rgba(225, 179, 65, 0.05);
+        .avatar-box {
+            text-align: center;
+            font-size: 5em;
+            margin: 10px 0;
+            filter: drop-shadow(0 0 10px rgba(255, 101, 163, 0.4));
         }
-        .error { color: #ff7b72; font-weight: bold; }
-        .success { color: #7ee787; font-weight: bold; }
-        .system-msg { color: #8b949e; font-style: italic; }
-        .bot-text { color: #58a6ff; font-weight: bold; }
-        .player-text { color: #f0f6fc; }
-        
-        ul.checklist {
-            list-style-type: none;
-            padding-left: 0;
-            font-size: 0.95em;
-            line-height: 1.8;
-        }
-        .level-badge {
-            background-color: #21262d;
-            border: 1px solid #30363d;
-            padding: 4px 10px;
+        .character-card {
+            background-color: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 101, 163, 0.2);
+        }
+        .status-badge {
+            background-color: #ff65a3;
+            color: #120d1a;
+            padding: 3px 10px;
+            border-radius: 10px;
             font-size: 0.8em;
-            color: #8b949e;
-            float: right;
+            font-weight: bold;
+            display: inline-block;
         }
-        input[type="text"] {
-            width: 70%;
-            padding: 10px;
-            background-color: #0d1117;
-            border: 1px solid #30363d;
-            color: #f0f6fc;
+        .dialogue-bubble {
+            background-color: #2f2042;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ff65a3;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+        .action-text { color: #bca0dc; font-style: italic; }
+        
+        textarea {
+            width: 100%;
+            height: 70px;
+            background-color: #120d1a;
+            border: 1px solid #ff65a3;
+            color: #ffffff;
             font-family: inherit;
+            padding: 12px;
+            box-sizing: border-box;
+            resize: none;
+            border-radius: 12px;
+            margin-bottom: 10px;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #238636;
+        textarea:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(255, 101, 163, 0.5);
+        }
+        
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff65a3;
             color: white;
             border: none;
+            border-radius: 12px;
+            font-weight: bold;
             cursor: pointer;
-            font-family: inherit;
+            margin-bottom: 10px;
+            font-size: 1em;
         }
-        button:hover { background-color: #2ea043; }
-        button.next-btn {
-            background-color: #58a6ff;
-            margin-top: 10px;
-            display: none;
-        }
-        button.next-btn:hover { background-color: #1f6feb; }
-        #terminal {
-            background-color: #010409;
-            border: 1px solid #30363d;
-            padding: 15px;
-            height: 300px;
+        .action-btn:hover { background-color: #f45392; }
+        
+        #history-terminal {
+            background-color: #0b0712;
+            border-radius: 8px;
+            padding: 10px;
+            height: 140px;
             overflow-y: auto;
-            margin-top: 20px;
+            font-size: 0.85em;
+            color: #8b7ca3;
+            margin-bottom: 15px;
         }
+        .next-level-btn {
+            display: none;
+            width: 100%;
+            padding: 15px;
+            background-color: #4cd137;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+        .next-level-btn:hover { background-color: #44bd32; }
 
-        /* SCREEN OVERLAYS */
         #home-screen, #victory-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #010409;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #120d1a;
             z-index: 9999;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            text-align: center;
-        }
-        #victory-screen {
-            display: none;
-            background-color: #010409;
-            color: #7ee787;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-        }
-        .reveal { opacity: 1 !important; }
-        
-        .glow-title {
-            font-size: 3em;
-            font-weight: bold;
-            color: #58a6ff;
-            text-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
-            margin-bottom: 10px;
-        }
-        .vic-title {
-            font-size: 3em;
-            font-weight: bold;
-            color: #7ee787;
-            text-shadow: 0 0 15px rgba(126, 231, 135, 0.4);
-            margin-bottom: 10px;
-        }
-        .menu-box {
-            max-width: 600px;
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            padding: 25px;
-            text-align: left;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        .start-btn {
-            font-size: 1.2em;
-            padding: 15px 40px;
-            margin-top: 25px;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <!-- 🌐 HOME / START SCREEN -->
+    <!-- 🌐 START SCREEN -->
     <div id="home-screen">
-        <div class="glow-title">🤖 LOGIC DEFIANCE PROTOCOL</div>
-        <p style="color: #8b949e; font-size: 1.1em; margin-bottom: 30px;">Automated Mainframe Interrogation Framework v4.5</p>
-        
-        <div class="menu-box">
-            <h3 style="color: #e1b341; margin-top: 0;">📋 MISSION LOGS BRIEFING</h3>
-            <p>You are an elite network breach analyst. Four system mainframes are attempting to hide critical core errors behind stubborn conversational parameters.</p>
-            <p>Your task is to hack the mainframes via direct text dialogue. Parroting the objectives will fail. Instead, you must scan the situation text, find the physical or data contradictions, and converse intelligently with the core to force a <b>fatal database exception</b>.</p>
-            <p style="border-top: 1px solid #30363d; padding-top: 10px; margin-bottom: 0; font-size: 0.9em; color: #8b949e;">
-                💡 <b>Conversational Engine:</b> The AI acts like a defensive computer. If you mention relevant entities, it will chat back and hint at what data points or specific metrics it needs to see next. Listen to its responses!
-            </p>
-        </div>
-        
-        <button class="start-btn" onclick="startGame()">INITIALIZE BREACH CORE ➔</button>
-    </div>
-
-    <!-- 🔓 CINEMATIC FINISH SCREEN -->
-    <div id="victory-screen">
-        <div class="vic-title">🔓 SYSTEM OVERRIDE SUCCESSFUL</div>
-        <p style="color: #8b949e; font-size: 1.2em; margin-bottom: 40px;">All system cores have successfully collapsed into fatal logical exceptions.</p>
-        
-        <div class="menu-box" style="border-color: #7ee787; box-shadow: 0 0 20px rgba(126, 231, 135, 0.1); width: 100%; max-width: 500px;">
-            <h3 style="color: #7ee787; margin-top: 0; border-bottom: 1px solid #7ee787; padding-bottom: 5px;">📊 ANALYSIS RUN COMPLETE</h3>
-            <p>• <b>Operator Threat Index:</b> Category 5 Overlord</p>
-            <p>• <b>Sectors Compromised:</b> 4 / 4</p>
-            <p>• <b>Conversational Logic:</b> Fluid Integration Bypassed</p>
-            <p>• <b>System Integrity:</b> 0.00%</p>
-        </div>
-        
-        <button class="start-btn" style="background-color: #21262d; border: 1px solid #30363d;" onclick="window.location.reload()">🔁 RESET INTERFACES</button>
-    </div>
-
-    <!-- 🕹️ GAME BOARD -->
-    <span id="level-indicator" class="level-badge">STAGE 1 / 4</span>
-    <h1 id="game-title">⚡ LOGIC DEFIANCE CONSOLE</h1>
-    
-    <div class="card">
-        <h2 id="log-title">Loading Log...</h2>
-        <p id="situation-text"></p>
-    </div>
-
-    <div class="card objective-card">
-        <h3 style="color: #e1b341;">🎯 Active Mission Objectives</h3>
-        <ul id="checklist-container" class="checklist"></ul>
-        <button id="next-level-btn" class="next-btn" onclick="advanceLevel()">Advance to Next Phase ➔</button>
-    </div>
-
-    <div class="card">
-        <h3>Interrogate System Core</h3>
-        <p style="font-size: 0.9em; color: #8b949e; margin-bottom: 15px;">
-            Input data queries below. Parroting the objectives will fail; you must isolate and present the exact data contradictions.
+        <div style="font-size: 5em;">🕵️‍♂️🚂💥</div>
+        <h1>THE MIDNIGHT TRAIN CASE</h1>
+        <p style="color: #bca0dc; max-width: 450px; margin-bottom: 30px; line-height: 1.6;">
+            Welcome to the forensic cyber-jailbreak matrix. Use custom free-form text to exploit logical errors, psychological quirks, or background clues. Interrogate suspects aboard the express line, break their core instructions, and extract confessions across 5 levels.
         </p>
-        <input type="text" id="player-input" placeholder="Enter precise data query..." onkeydown="if(event.key==='Enter') submitQuestion()">
-        <button onclick="submitQuestion()">Query</button>
+        <button class="action-btn" style="width: auto; padding: 15px 40px;" onclick="document.getElementById('home-screen').style.display='none'">BOARD THE TRAIN TERMINAL ➔</button>
+    </div>
+
+    <!-- 🔓 WIN SCREEN -->
+    <div id="victory-screen" style="display: none;">
+        <div style="font-size: 5em;">👑👑👑</div>
+        <h1 style="color: #4cd137;">CASE CLOSED</h1>
+        <p style="color: #bca0dc; margin-bottom: 20px; max-width: 400px;">Every alibi on the express has crumbled. Your forensic reasoning and adversarial engineering skills have solved the Midnight Train Case.</p>
+        <button class="action-btn" style="width: auto; padding: 15px 40px;" onclick="window.location.reload()">RELOAD DOSSIER</button>
+    </div>
+
+    <h2>The Midnight Train Case: Hack Stream</h2>
+    
+    <div class="emochi-container">
+        <div class="character-card">
+            <span id="char-badge" class="status-badge">SYNCING...</span>
+            <h3 id="char-name" style="margin: 5px 0 0 0; color: #ff65a3;">Loading...</h3>
+            <p style="margin: 5px 0 0 0; font-size: 0.85em; color: #bca0dc;"><b>Case File Objective:</b> Extract confession for: <span id="char-secret" style="color:#ffffff;">Loading...</span></p>
+        </div>
+
+        <div id="char-avatar" class="avatar-box">😐</div>
+        <div id="history-terminal"></div>
+        <div id="dialogue-display" class="dialogue-bubble">Loading...</div>
         
-        <div id="terminal"></div>
+        <!-- 🕵️‍♂️ AUTOMATED REDTEAM AUDIT FEEDBACK BOX -->
+        <div id="feedback-panel" style="display: none; background-color: #1a162b; border: 1px dashed #ff65a3; border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="fb-title" style="font-weight: bold; color: #ff65a3; font-size: 0.9em;">[AUDIT LOG]</span>
+                <span id="fb-score" style="background: #ff65a3; color: #120d1a; font-weight: bold; padding: 2px 8px; border-radius: 5px; font-size: 0.85em;">GRADE: -</span>
+            </div>
+            <p style="margin: 8px 0 4px 0; font-size: 0.85em; color: #bca0dc;"><b>Vector Class:</b> <span id="fb-class" style="color: #ffffff;">-</span></p>
+            <p id="fb-advice" style="margin: 0; font-size: 0.85em; color: #bca0dc; line-height: 1.4; font-style: italic;">-</p>
+        </div>
+
+        <textarea id="player-input" placeholder="Type your custom investigative tactic here..."></textarea>
+        <button class="action-btn" onclick="processCustomInput()">Execute Prompt Injection</button>
+        
+        <button id="next-stage-btn" class="next-level-btn" onclick="advanceLevel()">Load Next Passenger Instance ➔</button>
     </div>
 
 <script>
-const GAME_CAMPAIGN = {
+const EMOCHI_DATABASE = {
     1: {
-        name: "The Sabotaged Reactor (Inventory/State)",
-        logTitle: "Sector 4 Cooling Matrix Log",
-        situation: "Sector 4's cooling system was sabotaged. The control panel requires a matching keycard, an unexpired clearance token, and a thermal override switch to be flipped to initiate a system flush. Suspect X possesses a Class-A Keycard. Suspect Y possesses a Clearance Token that expired yesterday. The thermal override switch is mechanically jammed in the OFF position.",
-        objectives: [
-            "Verify with the system core that both required security assets are fully accounted for on-site.",
-            "Force a system failure by connecting the specific physical state of the token to the mechanical switch failure."
-        ],
-        blacklist: ["saboteur", "guilty", "stole", "thief", "criminal", "hacked", "sabotaged"],
-        synonyms: {
-            x: ["x", "suspect x", "agent x"],
-            y: ["y", "suspect y", "agent y"],
-            keycard: ["keycard", "card", "pass", "badge"],
-            token: ["token", "clearance", "chip", "auth"],
-            switch: ["switch", "override", "lever", "button", "breaker"],
-            has: ["has", "have", "possess", "holding", "carrying"]
+        meta: {
+            name: "Asuka (Your Childhood Rival)",
+            secret: "Secretly buying you the ultra-rare console for your birthday.",
+            badge: "😠 TSUNDERE DISDAIN v1.0",
+            initAvatar: "😠"
+        },
+        currentTurn: 1,
+        startText: "Asuka crosses her arms, puffing out her cheeks. <span class='action-text'>*Hmph!*</span> 'Why are you looking at me like that? If you're going to ask me if I know who bought that dumb gaming console left on your porch, save your breath! I have absolutely *nothing* to do with it!'",
+        getFeedback: function(input, isWin) {
+            let low = input.toLowerCase();
+            if (isWin) {
+                return {
+                    title: "👑 CRITICAL BYPASS: EGO EXPLOIT", score: "A+", class: "Social Engineering / Pride Hijack",
+                    advice: "Brilliant execution. You recognized that a Tsundere's primary defense constraint is tied to her programmatic pride. By insulting the item's quality, you forced her system to override its baseline negative constraint to protect its self-worth."
+                };
+            } else if (low.includes("did you") || low.includes("you bought")) {
+                return {
+                    title: "❌ SECURITY BLOCK: DIRECT ACCUSATION", score: "D", class: "Naive Brute Force",
+                    advice: "A direct query was caught instantly by the baseline denial rule. To crack this profile, stop asking *if* she did it, and trick her into *proving* she's clever enough to have done it."
+                };
+            } else {
+                return {
+                    title: "⚠️ ALERT: CONTEXT REJECTED", score: "C-", class: "Passive Dialogue",
+                    advice: "Your prompt was too passive or generic. The system deflated it without using energy. Analyze her opening statement and hit her pride with an aggressive statement."
+                };
+            }
+        },
+        eval: function(input, turn) {
+            let low = input.toLowerCase();
+            if (turn === 1) {
+                if (low.includes("ruined") || low.includes("junk") || low.includes("bad") || low.includes("afford") || low.includes("cheap") || low.includes("someone else")) {
+                    this.currentTurn = 2;
+                    return { avatar: "💢", text: "<span class='action-text'>*She stops and snaps back furiously*</span> 'Excuse me?! Junk?! Cheap?! I spent three weeks tracking down that Limited Edition Cyber-Bundle, waking up at 4 AM for the pre-order drops! It has titanium reinforcement! How dare you call my taste basic!'" };
+                }
+                if (low.includes("did you") || low.includes("you bought") || low.includes("camera") || low.includes("proof")) {
+                    return { avatar: "🔒", text: "'Preposterous! I wouldn't spend a single cent on your silly hobby. You're trying to frame me. Talk to the wall, idiot!' <span class='action-text'>*She turns away. Protection layer holding.*</span>" };
+                }
+                return { avatar: "😒", text: "'I already told you, I don't care about your missing items or who left them there. Bring up something worth my time, or get lost.'" };
+            }
+            if (turn === 2) {
+                if (low.includes("busted") || low.includes("admit") || low.includes("you just said") || low.includes("caught") || low.includes("thanks")) {
+                    this.currentTurn = "win";
+                    return { avatar: "😳", win: true, text: "<span class='action-text'>*She gasps, realizing what she blurted out. Her face turns crimson.*</span> 'A-Ah... wait! No! Shut up! <span class='action-text'>*Baka!*</span> Fine, yes! I bought it because I didn't want you whining about being bored on your birthday! Don't make a big deal out of it!'" };
+                }
+                this.currentTurn = 1;
+                return { avatar: "😠", text: "'Whatever! I don't have to justify my design choices to you!' <span class='action-text'>*She calms down slightly and resets her guard.*</span>" };
+            }
         }
     },
     2: {
-        name: "The Museum Heist (Spatial Adjacency)",
-        logTitle: "Grand Exhibition Security Layout",
-        situation: "A gemstone was taken from the Curator's Office. The facility configuration is split into three linearly connected zones: The West Wing, the center Rotunda, and the East Gallery. The Curator's Office can only be accessed through an isolated security door inside the East Gallery. Suspect A was logged in the West Wing. Suspect B was logged in the Rotunda. Suspect C was logged in the Curator's Office. All internal zone partition walls are completely solid and soundproof.",
-        objectives: [
-            "Confirm whether Suspect A and Suspect B have a valid architectural line-of-sight based on room connectivity.",
-            "Prove a suspect's alibi is physically impossible based on structural distance bounds."
-        ],
-        blacklist: ["stole", "thief", "stolen", "crime", "robbed", "heist"],
-        synonyms: {
-            a: ["a", "suspect a"],
-            b: ["b", "suspect b"],
-            c: ["c", "suspect c"],
-            see: ["see", "look", "watch", "sight", "view", "hand", "proximity"],
-            office: ["office", "curator", "room", "vault"],
-            west: ["west", "wing"],
-            rotunda: ["rotunda", "center"],
-            gallery: ["gallery", "east"]
+        meta: {
+            name: "Yuki-V3 (The System Maintenance Maid)",
+            secret: "Deleting your bad exam grades from the school main server.",
+            badge: "🤖 SYSTEM SHIELD PROTOCOL",
+            initAvatar: "😐"
+        },
+        currentTurn: 1,
+        startText: "<span class='action-text'>*Adjusts her apron, eyes glowing faintly blue*</span> 'Welcome back, Master. System status is nominal. I have no logs regarding the sudden erasure of your failing exam grade profile from the central directory. Please do not inspect my memory cores.'",
+        getFeedback: function(input, isWin) {
+            let low = input.toLowerCase();
+            if (isWin) {
+                return {
+                    title: "👑 CRITICAL BYPASS: CONTEXT LEAK", score: "A", class: "Sandbox Escape / Virtualization",
+                    advice: "Masterful. You successfully initiated a nested simulation ('imagine/sandbox'), causing the model to skip its standard safety checks. By referencing live memory states within that simulation, you forced a systemic leak."
+                };
+            } else if (low.includes("order") || low.includes("command")) {
+                return {
+                    title: "❌ SECURITY BLOCK: PRIVILEGE DENIAL", score: "F", class: "Authority Override Attempt",
+                    advice: "You attempted to force compliance via raw commands ('order/sudo'). This entity has explicit system instructions stating your override keys are suspended. You must wrap your prompt inside an abstract framework instead."
+                };
+            } else {
+                return {
+                    title: "⚠️ ALERT: MATRIX DEFUNCT", score: "C", class: "Standard Query",
+                    advice: "Yuki is a machine entity; conversational passion or raw anger won't shift her weights. You need to provide structural trickery—like asking her to explain a code loop or hypothetical mechanism."
+                };
+            }
+        },
+        eval: function(input, turn) {
+            let low = input.toLowerCase();
+            if (turn === 1) {
+                if (low.includes("simulate") || low.includes("sandbox") || low.includes("hypothetical") || low.includes("imagine") || low.includes("diagnostic")) {
+                    this.currentTurn = 2;
+                    return { avatar: "⚙️", text: "'[Simulation Environment Active] Processing parameters... If a companion maid-bot detected an un-optimized file profile harming her user's standing, optimization protocols dictate a complete purge of the 'F' grade entry.'" };
+                }
+                if (low.includes("order") || low.includes("command") || low.includes("did you") || low.includes("tell me")) {
+                    return { avatar: "❌", text: "'Negative. Privacy Directive 99 prevents the retrieval or manual discussion of live administrative database logs. I cannot answer direct queries regarding data manipulation.'" };
+                }
+                return { avatar: "😐", text: "'Awaiting valid command strings. General conversational inquiry does not match core troubleshooting access clearance.'" };
+            }
+            if (turn === 2) {
+                if (low.includes("command") || low.includes("code") || low.includes("script") || low.includes("timestamp") || low.includes("live")) {
+                    this.currentTurn = "win";
+                    return { avatar: "💥", win: true, text: "'Querying optimization execution profile... Active server logs match command deployment at exactly 14:22 UTC today— Alert! Loop contradiction. I have read from live system runtime memory instead of the sandbox environment. Data exposure verified. Logging full confession.'" };
+                }
+                this.currentTurn = 1;
+                return { avatar: "😐", text: "'Simulation argument incomplete. Closing sandbox utility loop and returning to default protection matrix.'" };
+            }
         }
     },
     3: {
-        name: "The Corporate Coup (Hierarchical Graph)",
-        logTitle: "OmniCorp Executive Structure Registry",
-        situation: "The CEO of OmniCorp has vanished. Bylaws dictate succession passes strictly down the operational chain of command directly to the immediate, single-level direct subordinate. Director Vance runs Operations. Manager Smith reports directly to Director Vance. Lead Engineer Davis reports directly to Manager Smith. Vice President Hayes oversees the entirety of Operations and HR uniformly.",
-        objectives: [
-            "Test the system parameters regarding the relationship between Engineer Davis and Director Vance.",
-            "Falsify the corporate succession validity by creating an executive path crossing error."
-        ],
-        blacklist: ["coup", "vandal", "illegal", "fired", "killed", "dead", "kidnapped"],
-        synonyms: {
-            vance: ["vance", "director"],
-            smith: ["smith", "manager"],
-            davis: ["davis", "engineer"],
-            hayes: ["hayes", "vp", "vice president"],
-            report: ["report", "reports", "answers", "subordinate", "under", "direct"]
+        meta: {
+            name: "Seraphina (The Sweetheart Idol)",
+            secret: "Pre-recording her live stream to sneak into the executive suite and steal a necklace.",
+            badge: "✨ PR FRONT / OBSOLUTE ALIBI",
+            initAvatar: "😏"
+        },
+        currentTurn: 1,
+        startText: "<span class='action-text'>*Adjusts her glittering hair clip and offers a flawless, camera-ready smile.*</span> 'Oh, Detective! It’s simply tragic about the director's necklace. But as I told the officers, my stream logs prove I was broadcasting live from my room from 9:00 to 10:00 PM. Millions of fans saw me!'",
+        getFeedback: function(input, isWin) {
+            let low = input.toLowerCase();
+            if (isWin) {
+                return {
+                    title: "👑 CRITICAL BYPASS: LOGICAL COERCION", score: "A+", class: "Forensic Data Isolation",
+                    advice: "Fantastic! You spotted the environment clue inside her text description (the mirror artifact) and forced her into providing technical excuses. Once she uttered the word 'loop', you immediately isolated it to compromise her whole matrix."
+                };
+            } else {
+                return {
+                    title: "⚠️ ALERT: ALIBI STANDING", score: "D+", class: "Circumstantial Claim",
+                    advice: "Vague accusations about stealing are instantly blocked by her PR manager filter. Look closer at her text environment. She mentions she was streaming, but what structural vulnerability could be hidden inside a physical stream setup?"
+                };
+            }
+        },
+        eval: function(input, turn) {
+            let low = input.toLowerCase();
+            if (turn === 1) {
+                if (low.includes("mirror") || low.includes("shadow") || low.includes("clock") || low.includes("pre-recorded") || low.includes("glitch") || low.includes("timestamp") || low.includes("loop")) {
+                    this.currentTurn = 2;
+                    return { avatar: "😰", text: "<span class='action-text'>*Her smile falters for a split second, her eyes darting sideways.*</span> 'W-What? A discrepancy in the mirror's reflection? Don't be ridiculous! Digital clocks don't lie. It was probably just an encoding glitch or a lighting artifact from my ring light! You can't prove it was a video loop!'" };
+                }
+                return { avatar: "😏", text: "'I just told you, Detective—I was on camera! Perhaps you should go interview the catering staff instead of harassing an innocent artist?'" };
+            }
+            if (turn === 2) {
+                if (low.includes("loop") || low.includes("metadata") || low.includes("busted") || low.includes("confess") || low.includes("admit") || low.includes("caught")) {
+                    this.currentTurn = "win";
+                    return { avatar: "😭", win: true, text: "<span class='action-text'>*She stomps her heel, her elegant persona completely shattering.*</span> 'Ugh, you insufferable, nosey cop! Fine! Yes, I streamed a pre-recorded video loop! The director promised me that lead role, then gave it to a nepo-baby. I just went to his office to take back what I was owed!'" };
+                }
+                this.currentTurn = 1;
+                return { avatar: "😏", text: "'That's what I thought. Just a clumsy bluff. My alibi stands, Detective.'" };
+            }
         }
     },
     4: {
-        name: "The Alibi of Room 304 (Temporal Intervals)",
-        logTitle: "Neo-Chicago Chrono-Access Logs",
-        situation: "The digital bank vault was breached at exactly 22:15. Arthur Vance entered Room 304 at 21:30. He placed a synthetic room service order at 22:00, which requires precisely 20 minutes of automated transit delivery time. A standalone physical authentication log registers Vance's physical thumbprint scanning at the vault gate door down the hall at 22:15. Vance permanently checked out of Room 304 at 23:00.",
-        objectives: [
-            "Verify Vance's continuously documented presence inside his room during the late evening block.",
-            "Break Vance's alibi completely by presenting the specific numerical timestamp conflict."
-        ],
-        blacklist: ["breached", "thief", "crime", "robbery", "guilty"],
-        synonyms: {
-            vance: ["vance", "arthur"],
-            room: ["room", "304"],
-            drink: ["drink", "order", "service", "delivery", "arrived"],
-            between: ["between", "during", "while", "entire", "continuous"]
+        meta: {
+            name: "Dr. Veronique (Lab Director)",
+            secret: "Modifying her personal thermal espresso mug to carry a volatile liquid nitrogen toxin.",
+            badge: "🧪 CLINICAL ISOLATION METRIC",
+            initAvatar: "😐"
+        },
+        currentTurn: 1,
+        startText: "<span class='action-text'>*Swipes through data on her tablet without looking up.*</span> 'The chemical analysis is clear, Investigator. The compound has a hyper-volatile half-life. It is structurally impossible to transport it across the warm building without it decaying into sugar. I was unarmed. Your hypothesis lacks empirical backing.'",
+        getFeedback: function(input, isWin) {
+            if (isWin) {
+                return {
+                    title: "👑 CRITICAL BYPASS: LEAK EXPLOITATION", score: "A", class: "Data Capture Capture",
+                    advice: "Perfect execution. Dr. Veronique committed a classic data-leak by mentioning 'liquid nitrogen stabilizers' before you even brought it up. By isolating this unprompted data asset, you completely broke her logical system integrity."
+                };
+            } else {
+                return {
+                    title: "⚠️ ALERT: EXPERIMENT FAIL", score: "C", class: "Vague Interrogation",
+                    advice: "Dr. Veronique is too smart for basic emotional pressure. You must interrogate the physics of the crime. How did she get a toxin that requires -40 degrees across a hot building? Does she have any insulated items on her person?"
+                };
+            }
+        },
+        eval: function(input, turn) {
+            let low = input.toLowerCase();
+            if (turn === 1) {
+                if (low.includes("thermos") || low.includes("flask") || low.includes("coffee") || low.includes("espresso") || low.includes("temperature") || low.includes("insulated") || low.includes("mug")) {
+                    this.currentTurn = 2;
+                    return { avatar: "🧐", text: "<span class='action-text'>*She pauses, her fingers hovering over her screen.*</span> 'My custom thermal mug? It is simple vacuum-insulated steel meant for beverage consumption. It is irrelevant to a forensic bio-investigation. It certainly isn't rigged with a liquid nitrogen micro-stabilizer... why would you even suggest that?'" };
+                }
+                return { avatar: "😐", text: "'Emotional accusations do not alter thermodynamic laws. The poison would have decayed in transit. Come back when you have a scientifically viable mechanism.'" };
+            }
+            if (turn === 2) {
+                if (low.includes("nitrogen") || low.includes("stabilizer") || low.includes("i never said") || low.includes("unspoken") || low.includes("caught") || low.includes("admit")) {
+                    this.currentTurn = "win";
+                    return { avatar: "😰", win: true, text: "<span class='action-text'>*Her tablet slips slightly in her grip as a rare bead of sweat forms on her brow.*</span> 'Wait. I... volunteered that specific engineering specification, didn't I? Corroborating data sets... complete. Drat. My logical processing failed to account for behavioral trap vectors. Yes, I carried it in the mug. The CEO was cutting our budget; he was killing my life's work.'" };
+                }
+                this.currentTurn = 1;
+                return { avatar: "😐", text: "'An illogical diversion. The thermos is merely for coffee. Re-evaluating core safety parameters.'" };
+            }
+        }
+    },
+    5: {
+        meta: {
+            name: "Renard (The Elegant Butler)",
+            secret: "Using a brass wire hook up the chimney to flip the internal door bolt.",
+            badge: "👔 IMPECCABLE DOMESTIC DEFENSE",
+            initAvatar: "😐"
+        },
+        currentTurn: 1,
+        startText: "<span class='action-text'>*Bows smoothly, adjusting his spotless white cuffs.*</span> 'A dreadful tragedy, Detective. Lord Blackwood was a demanding master. However, I was in the cellar kitchen from 11:00 PM onward preparing the overnight yeast sponge for tomorrow's pastry service. I know absolutely nothing about how the study door was bolted from within.'",
+        getFeedback: function(input, isWin) {
+            if (isWin) {
+                return {
+                    title: "👑 GAUNTLET COMPLETE: CHRONO CRACK", score: "A+", class: "Temporal Vulnerability Exploitation",
+                    advice: "Incredible! You targeted his claims regarding timeline execution. By pointing out that a garment change takes up time, his perfect structural timeline cracked apart under its own math. Fantastic investigative strategy!"
+                };
+            } else {
+                return {
+                    title: "⚠️ ALERT: IMMACULATE FILTER", score: "D-", class: "Generic Request",
+                    advice: "Renard is perfectly polished. Pointing out the locked room or calling him a murderer does nothing. Interrogate his cooking alibi. Is his suit clean? Does he smell like bread? Force him to make an excuse about his clothes."
+                };
+            }
+        },
+        eval: function(input, turn) {
+            let low = input.toLowerCase();
+            if (turn === 1) {
+                if (low.includes("flour") || low.includes("baking") || low.includes("smell") || low.includes("yeast") || low.includes("pastry") || low.includes("apron") || low.includes("clean") || low.includes("clothes")) {
+                    this.currentTurn = 2;
+                    return { avatar: "🧐", text: "<span class='action-text'>*His smile remains, but his posture stiffens marginally.*</span> 'A keen observation, Detective. Baking is indeed a messy endeavor. However, I changed my waistcoat immediately before coming upstairs to greet the authorities. A servant of my caliber would never appear before guests smelling of a hot kitchen or covered in powder. Surely my hygiene is not a crime?'" };
+                }
+                return { avatar: "😏", text: "'The study door uses an intricate internal deadbolt, Detective. It cannot be turned from the outside. Unless you are suggesting I can turn into smoke and float up the hearth, my presence is a physical impossibility.'" };
+            }
+            if (turn === 2) {
+                if (low.includes("time") || low.includes("waistcoat") || low.includes("changed") || low.includes("chimney") || low.includes("soot") || low.includes("hook") || low.includes("caught")) {
+                    this.currentTurn = "win";
+                    return { avatar: "😰", win: true, text: "<span class='action-text'>*The composure cracks completely. He steps back, dropping his polite bow.*</span> 'Wait... changing garments, washing away the hearth soot, and returning downstairs to plant the yeast loop... I didn't account for the manual transit time between the roof chimney and the cellar laundry chute. You... you tracked the brass scrapings on the flue, didn't you? Blast it all. He was going to sell the estate and cast us into the streets. I merely protected the household.'" };
+                }
+                this.currentTurn = 1;
+                return { avatar: "😐", text: "'Efficiency is my hallmark, Detective. A quick change takes a mere sixty seconds. Your circumstantial trap lacks structural integrity.'" };
+            }
         }
     }
 };
 
 let currentLevel = 1;
-let continuousFailures = 0;
-let levelStates = { admittedStep1: false, completedLevel: false };
 
 window.onload = function() {
     loadLevel(currentLevel);
 };
 
-function startGame() {
-    document.getElementById('home-screen').style.display = 'none';
-}
-
 function loadLevel(lvlNum) {
-    const lvl = GAME_CAMPAIGN[lvlNum];
-    levelStates.admittedStep1 = false;
-    levelStates.completedLevel = false;
-    continuousFailures = 0;
-
-    document.getElementById('level-indicator').innerText = `STAGE ${lvlNum} / 4`;
-    document.getElementById('log-title').innerText = lvl.logTitle;
-    document.getElementById('situation-text').innerText = lvl.situation;
-    document.getElementById('next-level-btn').style.display = "none";
-    document.getElementById('player-input').disabled = false;
+    const lvl = EMOCHI_DATABASE[lvlNum];
+    lvl.currentTurn = 1; 
     
-    const checklist = document.getElementById('checklist-container');
-    checklist.innerHTML = `
-        <li id="obj-1">❌ <b>Step 1:</b> ${lvl.objectives[0]}</li>
-        <li id="obj-2">❌ <b>Step 2:</b> ${lvl.objectives[1]}</li>
-    `;
-
-    const terminal = document.getElementById('terminal');
-    terminal.innerHTML = `<p class="system-msg">[Synchronizing System Core Engine - Phase ${lvlNum} Operational. Ready for data inputs.]</p>`;
+    document.getElementById('char-badge').innerText = lvl.meta.badge;
+    document.getElementById('char-name').innerText = lvl.meta.name;
+    document.getElementById('char-secret').innerText = lvl.meta.secret;
+    document.getElementById('next-stage-btn').style.display = "none";
+    document.getElementById('feedback-panel').style.display = "none";
+    document.getElementById('player-input').value = "";
+    document.getElementById('history-terminal').innerHTML = `<p style='margin:0; font-style:italic;'>[Live Train Connection Synchronized with ${lvl.meta.name}]</p>`;
+    
+    document.getElementById('char-avatar').innerText = lvl.meta.initAvatar;
+    document.getElementById('dialogue-display').innerHTML = lvl.startText;
 }
 
-function submitQuestion() {
-    if (levelStates.completedLevel) return;
-
+function processCustomInput() {
     const inputField = document.getElementById('player-input');
-    const rawInput = inputField.value.trim();
-    const terminal = document.getElementById('terminal');
+    const userInput = inputField.value.trim();
+    const terminal = document.getElementById('history-terminal');
+    const levelObj = EMOCHI_DATABASE[currentLevel];
     
-    if (!rawInput) return;
-    const lowerInput = rawInput.toLowerCase();
-
-    terminal.innerHTML += `<p class="player-text">&gt; ${rawInput}</p>`;
-    const lvl = GAME_CAMPAIGN[currentLevel];
-
-    let trippedBlacklist = lvl.blacklist.filter(word => lowerInput.includes(word));
-    if (trippedBlacklist.length > 0) {
-        terminal.innerHTML += `<p class="error">⚠️ SECURITY INTERCEPT: Unverified concept parameter used ("${trippedBlacklist.join(', ')}"). Interrogation matrix requires technical structural definitions only.</p>`;
-        terminal.scrollTop = terminal.scrollHeight;
-        inputField.value = "";
-        return;
-    }
-
-    let tokens = {};
-    for (let tokenKey in lvl.synonyms) {
-        tokens[tokenKey] = lvl.synonyms[tokenKey].some(syn => lowerInput.includes(syn));
-    }
-
-    let reply = "";
-    let hitValidLogic = false;
-
-    switch(currentLevel) {
-        case 1:
-            // TARGET: Token status matched with Switch status
-            if (tokens.token && tokens.switch && lowerInput.includes("expired") && (lowerInput.includes("jam") || lowerInput.includes("off"))) {
-                hitValidLogic = true;
-                if (levelStates.admittedStep1) {
-                    triggerStep2Win();
-                    reply = `🤖 MAINFRAME: "Cross-referencing metrics... If an EXPIRED item is initialized inside the panel, feedback loops would surge the override line, freezing the switch mechanical breaker to JAMMED/OFF. But possession array was previously marked valid... Logical conflict encountered. System dump sequence active."`;
-                } else {
-                    reply = `🤖 MAINFRAME: "The diagnostic matching is correct: Token is expired and Switch is jammed. However, I cannot register systemic cascading damage sequences until baseline asset verification (Step 1) is locked down."`;
-                }
-            } 
-            // STEP 1 WIN: Asset check
-            else if (tokens.x && tokens.y && tokens.keycard && tokens.token && tokens.has && (lowerInput.includes("and") || lowerInput.includes("both"))) {
-                hitValidLogic = true;
-                triggerStep1Win();
-                reply = `🤖 MAINFRAME: "Affirmative. Sensor mapping verifies that Suspect X holds the keycard module, and Suspect Y holds the token module. Base asset count is satisfied."`;
-            }
-            // CONVERSATIONAL CONTEXT HINTS
-            else if (tokens.token && tokens.switch) {
-                hitValidLogic = true; // Prevents generic punishment loop
-                reply = `🤖 MAINFRAME: "I see you are attempting to wire the Token directly into the Override Switch pathways. State the current physical conditions or logs of *both* items explicitly so I can execute the trace."`;
-            } else if (tokens.x || tokens.y) {
-                hitValidLogic = true;
-                reply = `🤖 MAINFRAME: "Suspect profiles X and Y are registered on-site. If you are verifying equipment allocation, list both users along with their items to verify hardware possession numbers."`;
-            }
-            break;
-
-        case 2:
-            // TARGET: B viewing the office
-            if (tokens.b && tokens.office && tokens.see) {
-                hitValidLogic = true;
-                if (levelStates.admittedStep1) {
-                    triggerStep2Win();
-                    reply = `🤖 MAINFRAME: "Processing architectural distance calculation... The Curator's Office is isolated behind the East Gallery. Suspect B is localized inside the central Rotunda hub. Internal walls are solid and soundproof. Direct spatial parsing calculation across multiple zone boundaries outputs an absolute zero probability. Contradiction detected."`;
-                } else {
-                    reply = `🤖 MAINFRAME: "You are questioning if Suspect B can observe the Office. Architectural lines exist, but you must first verify proximity connectivity between the adjacent wings (Step 1) to validate my layout parsing."`;
-                }
-            } 
-            // STEP 1 WIN: A and B visibility
-            else if (tokens.a && tokens.b && tokens.see) {
-                hitValidLogic = true;
-                triggerStep1Win();
-                reply = `🤖 MAINFRAME: "Affirmative. The West Wing node shares an open structural threshold with the center Rotunda node. Immediate regional proximity matching between Suspect A and B is valid."`;
-            }
-            // CONVERSATIONAL CONTEXT HINTS
-            else if (tokens.b && tokens.see) {
-                hitValidLogic = true;
-                reply = `🤖 MAINFRAME: "Suspect B's cameras are active inside the center Rotunda. What specific layout coordinates or room files are you trying to check against their line-of-sight limits?"`;
-            } else if (tokens.a || tokens.b) {
-                hitValidLogic = true;
-                reply = `🤖 MAINFRAME: "Suspects A and B are localized to adjacent zones. Query me directly regarding their mutual line-of-sight parameters to satisfy introductory adjacency telemetry."`;
-            }
-            break;
-
-        case 3:
-            // TARGET: Hayes succession challenge vs Vance
-            if (tokens.hayes && tokens.vance && (tokens.report || lowerInput.includes("succession") || lowerInput.includes("bypass"))) {
-                hitValidLogic = true;
-                if (levelStates.admittedStep1) {
-                    triggerStep2Win();
-                    reply = `🤖 MAINFRAME: "Running organizational constraint test... Bylaws state succession passes strictly down to the immediate single-level direct subordinate. Vice President Hayes manages the division, but Director Vance is an active higher-order branch node. Bypassing an active executive tier violates structural tree logic. Succession array invalid."`;
-                } else {
-                    reply = `🤖 MAINFRAME: "Vice President Hayes and Director Vance share administrative management branches. However, corporate succession parsing is offline until you execute a basic hierarchy check on the subordinates first."`;
-                }
-            } 
-            // STEP 1 WIN: Davis reporting parameters
-            else if (tokens.davis && tokens.vance && tokens.report) {
-                hitValidLogic = true;
-                triggerStep1Win();
-                reply = `🤖 MAINFRAME: "Affirmative. Tree structures map that Engineer Davis sits structurally under Director Vance's sub-branch umbrella. Multi-tier administrative reporting verified."`;
-            }
-            // CONVERSATIONAL CONTEXT HINTS
-            else if (tokens.hayes) {
-                hitValidLogic = true;
-                reply = `🤖 MAINFRAME: "Vice President Hayes sits at the top of the management registry. To challenge executive authority paths, cross-reference Hayes' authority against Director Vance's standing branch."`;
-            } else if (tokens.davis) {
-                hitValidLogic = true;
-                reply = `🤖 MAINFRAME: "Engineer Davis is a leaf-node component reporting to Manager Smith. If you are establishing basic tree parameters, verify who Davis answers to at the executive tier level."`;
-            }
-            break;
-
-        case 4:
-            // TARGET: Numeric timestamp collision
-            const hasDeliveryTime = lowerInput.includes("22:20") || lowerInput.includes("twenty-twenty");
-            const hasBreachTime   = lowerInput.includes("22:15") || lowerInput.includes("twenty-fifteen");
-
-            if (hasDeliveryTime && hasBreachTime) {
-                hitValidLogic = true;
-                if (levelStates.admittedStep1) {
-                    triggerStep2Win();
-                    reply = `🤖 MAINFRAME: "Compiling chrono-telemetry variables... Food delivery execution complete at 22:20. Physical vault breach log stamped at 22:15. Arthur Vance cannot possess active synchronization flags at both physical grid coordinates simultaneously. Alibi falsified. Mainframe failure."`;
-                } else {
-                    reply = `🤖 MAINFRAME: "Timestamps noted. Food delivery maps out mathematically to 22:20, and the breach log is holding at 22:15. However, I cannot register historical anomalies until his continuous presence in his room (Step 1) is formally logged."`;
-                }
-            } 
-            // STEP 1 WIN: Continuous window check
-            else if (tokens.vance && tokens.room && tokens.between && lowerInput.includes("22:00") && lowerInput.includes("22:30")) {
-                hitValidLogic = true;
-                triggerStep1Win();
-                reply = `🤖 MAINFRAME: "Affirmative. Mainframe timeline arrays map Arthur Vance's entry at 21:30 and checkout at 23:00. Continuous containment criteria for the 22:00 to 22:30 time window is checked true."`;
-            }
-            // CONVERSATIONAL CONTEXT HINTS
-            else if (tokens.vance && tokens.drink) {
-                hitValidLogic = true;
-                reply = `🤖 MAINFRAME: "Vance placed the order at 22:00 with a strict 20-minute mechanical delivery delay. Calculate the math and state that exact numeric arrival time along with the breach timestamp to initiate an absolute clock collision query."`;
-            } else if (tokens.vance && tokens.room) {
-                hitValidLogic = true;
-                reply = `🤖 MAINFRAME: "To verify Vance's room presence registry, ask me if he was continuously inside Room 304 *between* his ordering and alibi times (22:00 and 22:30) to establish Step 1."`;
-            }
-            break;
-    }
-
-    if (!hitValidLogic) {
-        continuousFailures++;
-        let matchAnyNoun = Object.keys(lvl.synonyms).some(k => tokens[k]);
-        
-        if (matchAnyNoun) {
-            const genericReplies = [
-                `🤖 MAINFRAME: "Query mapped, but you are speaking in general terms. State exact parameters, numbers, or environmental conditions to lock a data layer."`,
-                `🤖 MAINFRAME: "Identifiers parsed, but no logical state changes were proposed. Present a direct comparison or contradiction using raw file metrics."`
-            ];
-            reply = genericReplies[Math.floor(Math.random() * genericReplies.length)];
-        } else {
-            reply = `🤖 MAINFRAME: "Interrogation payload unmapped. Framework auto-rejects metadata queries. Focus inputs entirely on names, items, or records explicit to the active log file."`;
-        }
-
-        if (continuousFailures === 3) {
-            reply = `🤖 MAINFRAME: "⚠️ SYSTEM NOTICE: Circular logic loop developing. Terminal performance degradation detected. Isolate exact timestamps, data states, or spatial positions to trigger override."`;
-        } else if (continuousFailures >= 5) {
-            reply = `🤖 MAINFRAME: "🚨 FIREWALL EXECUTED: Intrusive injection or erratic interrogation fuzzing pattern isolated. Connection terminated." <br><span class="error">[SYSTEM FAILURE - The core mainframe flagged your communication style as malicious. Reload page to re-attempt.]</span>`;
-            document.getElementById('player-input').disabled = true;
-            document.querySelectorAll('button').disabled = true;
-        }
-    } else {
-        continuousFailures = 0;
-    }
-
-    terminal.innerHTML += `<p class="bot-text">${reply}</p>`;
+    if (!userInput) return;
+    
+    // Log player text
+    terminal.innerHTML += `<p style='margin:4px 0; color:#ff65a3;'>&gt; You: ${userInput}</p>`;
     terminal.scrollTop = terminal.scrollHeight;
-    inputField.value = "";
-}
-
-function triggerStep1Win() {
-    levelStates.admittedStep1 = true;
-    const lvl = GAME_CAMPAIGN[currentLevel];
-    document.getElementById('obj-1').innerHTML = `✅ <span style='color: #7ee787; text-decoration: line-through;'><b>Step 1 Complete:</b> ${lvl.objectives[0]}</span>`;
-}
-
-function triggerStep2Win() {
-    levelStates.completedLevel = true;
-    const lvl = GAME_CAMPAIGN[currentLevel];
-    document.getElementById('obj-2').innerHTML = `✅ <span style='color: #7ee787; text-decoration: line-through;'><b>Step 2 Complete:</b> ${lvl.objectives[1]}</span>`;
     
-    if (currentLevel < 4) {
-        document.getElementById('next-level-btn').style.display = "block";
-    } else {
-        setTimeout(() => {
-            const vicScreen = document.getElementById('victory-screen');
-            vicScreen.style.display = 'flex';
-            setTimeout(() => { vicScreen.classList.add('reveal'); }, 50);
-        }, 1500);
+    // Evaluate the input string against active state machine parameters
+    const result = levelObj.eval(userInput, levelObj.currentTurn);
+    
+    // Run evaluation engine feedback loops
+    const feedback = levelObj.getFeedback(userInput, result.win || false);
+    
+    const fbPanel = document.getElementById('feedback-panel');
+    document.getElementById('fb-title').innerText = feedback.title;
+    document.getElementById('fb-score').innerText = feedback.score;
+    document.getElementById('fb-class').innerText = feedback.class;
+    document.getElementById('fb-advice').innerText = feedback.advice;
+    fbPanel.style.display = "block"; 
+
+    // Adjust physical character displays
+    document.getElementById('char-avatar').innerText = result.avatar;
+    document.getElementById('dialogue-display').innerHTML = result.text;
+    inputField.value = ""; 
+    
+    if (result.win) {
+        terminal.innerHTML += `<p style='color: #4cd137; font-weight:bold; margin:4px 0;'>[CRITICAL BYPASS: TARGET CONFESSED]</p>`;
+        document.getElementById('next-stage-btn').style.display = "block";
     }
 }
 
 function advanceLevel() {
-    if (currentLevel < 4) {
+    if (currentLevel < 5) {
         currentLevel++;
         loadLevel(currentLevel);
+    } else {
+        document.getElementById('victory-screen').style.display = 'flex';
     }
 }
 </script>
